@@ -1,0 +1,8 @@
+{
+    "adminPanel": {
+        "command": "admin",
+        "allowedGroups": [
+            "admin", "mod", "god"
+        ]
+    }
+}
