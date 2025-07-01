@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import Loading from "../utils/Loading";
-import type { OpenData } from "../../typings/open";
+import type { OpenData, Player as PlayerData } from "../../typings/open";
 import { Locale } from "../store/locale";
 import PlayersTable from "./PlayersTable";
+import Player from "./Player";
 
 interface TabProps {
     label: string;
@@ -16,7 +17,9 @@ const PLAYERS_PER_PAGE = 10;
 
 const Players: React.FC<{
     data: OpenData;
-}> = ({ data }) => {
+    player: PlayerData | null;
+    setPlayer: (player: PlayerData | null) => void;
+}> = ({ data, player, setPlayer }) => {
     const [visible, setVisible] = useState<boolean>(false);
     const [query, setQuery] = useState('');
     const [tabs, setTabs] = useState<TabProps[]>([
@@ -70,7 +73,7 @@ const Players: React.FC<{
     };
 
     return (
-        visible ? (
+        visible && !player ? (
             <div className="h-full">
                 <div className="text-white text-sm bg-neutral-900 w-fit flex justify-center mx-auto px-5 py-1.5 rounded-full">
                     {tabs.map((tab, index) => (
@@ -99,6 +102,7 @@ const Players: React.FC<{
                             setSortDirection('asc');
                         }
                     }}
+                    setPlayer={(data: PlayerData) => setPlayer(data)}
                 />
                 
                 <div className="text-white text-[13px] flex items-center justify-end mt-5 gap-1">
@@ -109,13 +113,15 @@ const Players: React.FC<{
                         {Locale.ui_previous || 'Previous'}
                     </button>
                     <button onClick={() => goToNext()} 
-                    className={`bg-neutral-900 px-2 py-1 rounded border border-neutral-700 ${currentPage == totalPages && 'opacity-50 pointer-events-none'}
+                    className={`bg-neutral-900 px-2 py-1 rounded border border-neutral-700 ${(currentPage === totalPages || paginatedData.length < 1) && 'opacity-50 pointer-events-none'}
                     hover:bg-neutral-800 border-neutral-600 duration-200`}
                     >
                         {Locale.ui_next || 'Next'}
                     </button>
                 </div>
             </div>
+        ) : player ? (
+            <Player data={player} />
         ) : <Loading />
     )
 };

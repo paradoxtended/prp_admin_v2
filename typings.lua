@@ -9,3 +9,8 @@
 ---@field label string;
 ---@field amount number;
 ---@field color string;
+
+---@class FetchedPlayer
+---@field banned boolean;
+---@field identifiers? { steam: string?, license: string?, discord: string? };
+---@field coords { x: number, y: number, z: number };

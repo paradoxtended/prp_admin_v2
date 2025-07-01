@@ -1,3 +1,11 @@
+---@param id number
+---@param cb any
+RegisterNuiCallback('getPlayerData', function(id, cb)
+    local response = lib.callback.await('prp_admin_v2:getPlayerData', false, id)
+
+    cb(response)
+end)
+
 ---@param players PlayerData[]
 ---@param jobs JobsData[]
 RegisterNetEvent('prp_admin_v2:openAdminMenu', function(players, jobs)

@@ -7,7 +7,7 @@ import { fetchNui } from "./utils/fetchNui";
 import type { CategoryProps } from "./typings/category";
 import Category from "./components/Category";
 import Dashboard from "./components/categories/Dashboard";
-import type { OpenData } from "./typings/open";
+import type { OpenData, Player } from "./typings/open";
 import Players from "./components/categories/Players";
 
 debugData<OpenData>([
@@ -40,6 +40,7 @@ const App: React.FC = () => {
     { name: 'players', icon: 'fa-solid fa-users' }
   ]);
   const currentCategory = categories.find(c => c.active)?.name || 'dashboard';
+  const [player, setPlayer] = useState<Player | null>(null);
 
   useNuiEvent('openAdmin', (data: OpenData) => {
     setData(data);
@@ -65,6 +66,8 @@ const App: React.FC = () => {
   }, [visible]);
 
   const changeCategory = (name: string) => {
+    if (name === 'players' && currentCategory === 'players') setPlayer(null);
+
     setCategories(prev => 
       prev.map(cat => ({
         ...cat,
@@ -86,7 +89,7 @@ const App: React.FC = () => {
           </div>
           <div className="w-full h-full pr-10">
             {currentCategory === 'dashboard' && <Dashboard data={data} changeCategory={(name: string) => changeCategory(name)}/>}
-            {currentCategory === 'players' && <Players data={data as OpenData} />}
+            {currentCategory === 'players' && <Players data={data as OpenData} player={player} setPlayer={setPlayer} />}
           </div>
         </div>
       </div>

@@ -2,13 +2,14 @@ lib.locale()
 
 ---Function yoinked from https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/GetPlayerIdentifiers/
 ---@param playerId number
+---@param type 'steam' | 'discord' | 'xbl' | 'live' | 'license' | 'license2' | 'fivem' | 'ip'
 ---@return string | nil
-local function getPlayerIdentifier(playerId)
+local function getPlayerIdentifier(playerId, type)
     local playerIdents = GetPlayerIdentifiers(playerId)
 
     for i = 1, #playerIdents do
         local identifierType, identifierValue = string.match(playerIdents[i], "([^:]+):(.+)")
-        if identifierType == "fivem" or identifierType == 'steam' then
+        if identifierType == type then
             return identifierValue
         end
     end
@@ -59,7 +60,7 @@ lib.addCommand(config.adminPanel.command, {
             table.insert(players, {
                 charName = player:getFirstName() .. ' ' .. player:getLastName(),
                 id = playerId,
-                steam = getPlayerIdentifier(playerId),
+                steam = getPlayerIdentifier(playerId, 'steam') or getPlayerIdentifier(playerId, 'fivem'),
                 accName = GetPlayerName(playerId),
                 admin = player:hasOneOfGroups(config.adminPanel.allowedGroups)
             })
@@ -71,4 +72,29 @@ lib.addCommand(config.adminPanel.command, {
     end
 
     TriggerClientEvent('prp_admin_v2:openAdminMenu', source, players, jobs)
+end)
+
+---@param source number
+---@param playerId number
+---@return FetchedPlayer?
+lib.callback.register('prp_admin_v2:getPlayerData', function(source, playerId)
+    local player = Framework.getPlayerFromId(source)
+
+    if not player or not player:hasOneOfGroups(config.adminPanel.allowedGroups) then return end
+
+    local target = Framework.getPlayerFromId(playerId)
+
+    if not target then return end
+    local coords = GetEntityCoords(GetPlayerPed(playerId))
+
+    ---@type FetchedPlayer
+    return {
+        banned = false, -- todo import banning system and check if player is banned
+        identifiers = {
+            steam = getPlayerIdentifier(playerId, 'steam') or nil,
+            license = getPlayerIdentifier(playerId, 'license') or nil,
+            discord = getPlayerIdentifier(playerId, 'discord') or nil
+        },
+        coords = { x = coords.x, y = coords.y, z = coords.z }
+    }
 end)
