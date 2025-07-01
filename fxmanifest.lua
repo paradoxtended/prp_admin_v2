@@ -13,9 +13,13 @@ dependencies {
     '/onesync',
     'oxmysql',
     'ox_lib',
+    'prp_lib'
 }
 
-shared_script '@ox_lib/init.lua'
+shared_scripts {
+    '@ox_lib/init.lua',
+    '@prp_lib/init.lua',
+}
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',

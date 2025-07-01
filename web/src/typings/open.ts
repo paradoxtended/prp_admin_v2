@@ -1,7 +1,14 @@
+export interface Player {
+    charName: string; 
+    id: number; 
+    steam: string | number; 
+    accName: string; 
+    admin?: boolean
+}
+
 interface PlayersProps {
-    count: number;
+    players: Player[]
     jobs: { label: string; amount: number; color: string; }[];
-    admins: { nickname: string; id: number; role?: string }[]
 }
 
 export interface OpenData {

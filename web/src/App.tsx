@@ -8,21 +8,25 @@ import type { CategoryProps } from "./typings/category";
 import Category from "./components/Category";
 import Dashboard from "./components/categories/Dashboard";
 import type { OpenData } from "./typings/open";
+import Players from "./components/categories/Players";
 
 debugData<OpenData>([
   {
     action: 'openAdmin',
     data: {
       players: {
-        count: 263,
+        players: [
+          { charName: 'Andrew Pierce', id: 15, steam: 458745156, accName: 'Ravage', admin: true },
+          { charName: 'Sarah Brassi', id: 11, steam: 154876512, accName: 'mrs.sarahh', admin: true },
+          { charName: 'Mathew Cavazza', id: 8, steam: 124568725, accName: 'mathew' },
+          { charName: 'Antonny Goodman', id: 25, steam: 123783242, accName: 'Mrdudecall' },
+          { charName: 'Jesse Pinkman', id: 35, steam: 101204538, accName: 'iamboss' },
+        ],
         jobs: [
           { label: 'Medical', amount: 2, color: '#f87171' },
           { label: 'Police', amount: 17, color: '#2563eb' },
           { label: 'DOJ', amount: 0, color: '#eab308' },
         ],
-        admins: [
-          { nickname: 'Ravage', role: 'Admin', id: 55 }
-        ]
       }
     }
   }
@@ -30,7 +34,6 @@ debugData<OpenData>([
 
 const App: React.FC = () => {
   const [visible, setVisible] = useState<boolean>(false);
-  const [load, setLoad] = useState<boolean>(false);
   const [data, setData] = useState<OpenData>();
   const [categories, setCategories] = useState<CategoryProps[]>([
     { name: 'dashboard', icon: 'fa-solid fa-house', active: true },
@@ -41,7 +44,6 @@ const App: React.FC = () => {
   useNuiEvent('openAdmin', (data: OpenData) => {
     setData(data);
     setVisible(true);
-    setTimeout(() => setLoad(true), 1)
   });
 
   const handleClose = () => {
@@ -83,7 +85,8 @@ const App: React.FC = () => {
             ))}
           </div>
           <div className="w-full h-full pr-10">
-            {currentCategory === 'dashboard' && <Dashboard load={load} data={data} changeCategory={(name: string) => changeCategory(name)}/>}
+            {currentCategory === 'dashboard' && <Dashboard data={data} changeCategory={(name: string) => changeCategory(name)}/>}
+            {currentCategory === 'players' && <Players data={data as OpenData} />}
           </div>
         </div>
       </div>

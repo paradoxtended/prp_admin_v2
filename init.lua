@@ -15,3 +15,5 @@ local framework = LoadResourceFile('prp_lib', ('resource/callbacks/%s/%s.lua'):f
 config = json.decode(configFile)
 
 Framework = assert(load(framework))()
+
+return context == 'client' and require 'client' or require 'server'

@@ -4,18 +4,12 @@ import { Locale } from "../store/locale";
 import type { OpenData } from "../../typings/open";
 
 const Dashboard: React.FC<{ 
-    load: boolean; 
     data?: OpenData;
     changeCategory: (name: string) => void;
-}> = ({ load, data, changeCategory }) => {
+}> = ({ data, changeCategory }) => {
     const [visible, setVisible] = useState<boolean>(false);
 
     useEffect(() => {
-        if (!load) {
-            setVisible(true);
-            return
-        };
-
         setTimeout(() => setVisible(true), 500);
     }, []);
 
@@ -26,7 +20,7 @@ const Dashboard: React.FC<{
                     <div className="w-3/4 h-fit max-h-[100%] p-5 bg-neutral-900 border border-neutral-700 rounded text-white">
                         <div className="flex items-center justify-between">
                             <p className="font-semibold text-[15px]">{Locale.ui_current_players || 'Current Players on Server'}</p>
-                            <p className="text-lime-400 font-bold text-lg">{data?.players.count}</p>
+                            <p className="text-lime-400 font-bold text-lg">{data?.players.players.length}</p>
                         </div>
                         <div className="flex items-center gap-3 my-5 flex-wrap max-h-36 overflow-auto">
                             {data?.players.jobs.map((job, index) => (
@@ -45,13 +39,13 @@ const Dashboard: React.FC<{
                     <div className="w-1/3 h-full py-5 bg-neutral-900 border border-neutral-700 rounded text-white">
                         <div className="flex items-center justify-between px-5">
                             <p className="font-semibold text-[15px]">{Locale.ui_admins_online || 'Admins Online'}</p>
-                            <p className="text-lime-400 font-bold text-lg">{data?.players.admins.length}</p>
+                            <p className="text-lime-400 font-bold text-lg">{data?.players.players.filter(ply => ply.admin === true).length}</p>
                         </div>
                         <div className="mt-3 flex flex-col gap-2 h-56 overflow-auto px-5">
-                            {data?.players.admins.map((admin, index) => (
-                                <div key={`admin-${index}`} className="flex items-center text-sm justify-between bg-[#202020] px-2 py-1 rounded-md border border-neutral-600">
-                                    <p>{admin.nickname}</p>
-                                    <p className="bg-lime-500/20 border border-lime-500 rounded-md px-1.5 py-0.5 text-[13px]">{admin.role ? admin.role : 'Admin'}</p>
+                            {data?.players.players.filter(ply => ply.admin === true).map((admin, index) => (
+                                <div key={`admin-${index}`} className="group flex items-center text-sm justify-between bg-[#202020] px-2 py-1 rounded-md border border-neutral-600 cursor-pointer">
+                                    <p className="group-hover:text-lime-500 duration-200">{admin.accName}</p>
+                                    <p className="bg-lime-500/20 border border-lime-500 rounded-md px-1.5 py-0.5 text-[13px]">Admin</p>
                                 </div>
                             ))}
                         </div>

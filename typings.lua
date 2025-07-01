@@ -1,0 +1,11 @@
+---@class PlayerData
+---@field charName string;
+---@field id number;
+---@field steam string | number;
+---@field accName string;
+---@field admin boolean;
+
+---@class JobsData
+---@field label string;
+---@field amount number;
+---@field color string;
