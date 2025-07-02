@@ -1,3 +1,4 @@
 {
-    "command_help": "Opens up admin menu."
+    "command_help": "Opens up admin menu.",
+    "action_success": "Action successfully performed."
 }

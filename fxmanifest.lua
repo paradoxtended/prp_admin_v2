@@ -36,5 +36,6 @@ files {
     'locales/*.json',
     'web/build/index.html',
     'web/build/**/*',
+    'modules/**/*.lua',
     'data/*'
 }

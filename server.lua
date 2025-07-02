@@ -1,5 +1,8 @@
 lib.locale()
 
+require 'modules.account.server'
+require 'modules.job.server'
+
 ---Function yoinked from https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/GetPlayerIdentifiers/
 ---@param playerId number
 ---@param type 'steam' | 'discord' | 'xbl' | 'live' | 'license' | 'license2' | 'fivem' | 'ip'
@@ -95,6 +98,8 @@ lib.callback.register('prp_admin_v2:getPlayerData', function(source, playerId)
             license = getPlayerIdentifier(playerId, 'license') or nil,
             discord = getPlayerIdentifier(playerId, 'discord') or nil
         },
-        coords = { x = coords.x, y = coords.y, z = coords.z }
+        coords = { x = coords.x, y = coords.y, z = coords.z },
+        account = { bank = target:getAccountMoney('bank'), cash = target:getAccountMoney('money') },
+        jobs = { name = select(1, target:getJob()), label = select(2, target:getJob()), grade = select(2, target:getJobGrade()) }
     }
 end)

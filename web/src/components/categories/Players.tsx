@@ -74,7 +74,7 @@ const Players: React.FC<{
 
     return (
         visible && !player ? (
-            <div className="h-full">
+            <div className="h-full pr-10">
                 <div className="text-white text-sm bg-neutral-900 w-fit flex justify-center mx-auto px-5 py-1.5 rounded-full">
                     {tabs.map((tab, index) => (
                         <p key={`tab-${index}`}
@@ -86,7 +86,8 @@ const Players: React.FC<{
                     <input type="text"
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder={Locale.ui_search || 'Search...'}
-                    className="bg-neutral-900 border border-neutral-700 focus:outline-none rounded text-[13px] px-3 py-1.5 w-full placeholder:text-neutral-300"/>
+                    className="bg-neutral-900 border border-neutral-700 focus:outline-none rounded text-[13px] px-3 py-1.5 w-full placeholder:text-neutral-300
+                    focus:border-lime-600"/>
                     <i className="fa-solid fa-magnifying-glass absolute top-1/2 right-3 -translate-y-1/2 pointer-events-none scale-90"></i>
                 </div>
 
@@ -108,13 +109,13 @@ const Players: React.FC<{
                 <div className="text-white text-[13px] flex items-center justify-end mt-5 gap-1">
                     <button onClick={() => goToPrevious()} 
                     className={`bg-neutral-900 px-2 py-1 rounded border border-neutral-700 ${currentPage <= 1 && 'opacity-50 pointer-events-none'}
-                    hover:bg-neutral-800 border-neutral-600 duration-200`}
+                    hover:bg-lime-500/20 hover:border-lime-600 duration-200`}
                     >
                         {Locale.ui_previous || 'Previous'}
                     </button>
                     <button onClick={() => goToNext()} 
                     className={`bg-neutral-900 px-2 py-1 rounded border border-neutral-700 ${(currentPage === totalPages || paginatedData.length < 1) && 'opacity-50 pointer-events-none'}
-                    hover:bg-neutral-800 border-neutral-600 duration-200`}
+                    hover:bg-lime-500/20 hover:border-lime-600 duration-200`}
                     >
                         {Locale.ui_next || 'Next'}
                     </button>

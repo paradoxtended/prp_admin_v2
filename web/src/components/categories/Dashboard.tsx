@@ -15,7 +15,7 @@ const Dashboard: React.FC<{
 
     return (
         visible ? (
-            <div className="h-full">
+            <div className="h-full pr-10">
                 <div className="w-full h-1/2 flex gap-3">
                     <div className="w-3/4 h-fit max-h-[100%] p-5 bg-neutral-900 border border-neutral-700 rounded text-white">
                         <div className="flex items-center justify-between">

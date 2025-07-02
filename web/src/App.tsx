@@ -87,7 +87,7 @@ const App: React.FC = () => {
               <Category key={`category-${index}`} icon={category.icon} active={category?.active} setactive={() => changeCategory(category.name)} />
             ))}
           </div>
-          <div className="w-full h-full pr-10">
+          <div className="w-full h-full">
             {currentCategory === 'dashboard' && <Dashboard data={data} changeCategory={(name: string) => changeCategory(name)}/>}
             {currentCategory === 'players' && <Players data={data as OpenData} player={player} setPlayer={setPlayer} />}
           </div>

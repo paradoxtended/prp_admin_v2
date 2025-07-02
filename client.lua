@@ -1,3 +1,8 @@
+lib.locale()
+
+require 'modules.account.client'
+require 'modules.job.client'
+
 ---@param id number
 ---@param cb any
 RegisterNuiCallback('getPlayerData', function(id, cb)
