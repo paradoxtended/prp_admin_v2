@@ -38,9 +38,11 @@ RegisterNuiCallback('reset_model', function(playerId, cb)
     end
 end)
 
----@param data { target: number, model: string }
+---@param data { target: number, model: string, perm?: boolean }
 RegisterNuiCallback('set_model', function(data, cb)
     cb(1)
+
+    if not IsModelValid(data.model) then return end
 
     local response = lib.callback.await('prp_admin_v2:set_model', false, data)
 

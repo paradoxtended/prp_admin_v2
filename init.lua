@@ -7,6 +7,19 @@ if resourceName ~= resource then return end
 local LoadResourceFile = LoadResourceFile
 local context = IsDuplicityVersion() and 'server' or 'client'
 
+local function initPedModels()
+    local file = LoadResourceFile(resource, 'data/pedModels.json')
+
+    if not file and context == 'server' then
+        SaveResourceFile(resource, 'data/pedModels.json', '{}', -1)
+    end
+
+    ---@type table<string, number | string>
+    PedModels = file and json.decode(file) or {}
+end
+
+initPedModels()
+
 local frameworkName = GetResourceState('es_extended') == 'started' and 'esx' or 'qb'
 
 local configFile = LoadResourceFile('prp_admin_v2', 'data/config.json')

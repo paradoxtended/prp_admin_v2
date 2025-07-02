@@ -130,7 +130,7 @@ const Player: React.FC<{
         setShowModal(true);
     };
 
-    const changePedModel = (model: string | number | undefined, reset?: boolean) => {
+    const changePedModel = (model: string | number | undefined, reset?: boolean, perm?: boolean) => {
         if (reset) {
             fetchNui('reset_model', Number(data.id))
 
@@ -142,7 +142,8 @@ const Player: React.FC<{
 
         fetchNui('set_model', {
             target: data.id,
-            model: model
+            model: model,
+            perm: perm
         })
 
         // Wait for ped to change
@@ -361,7 +362,7 @@ const Player: React.FC<{
                                             hover:bg-neutral-700 hover:border-neutral-500 duration-200">{Locale.ui_browse_models || 'Browse Models'}</button>
                                             <button onClick={() => changePedModel(player?.ped)} className="text-[13px] bg-neutral-800 border border-neutral-600 rounded-full px-3 py-1.5 w-full
                                             hover:bg-neutral-700 hover:border-neutral-500 duration-200">{Locale.ui_set_ped || 'Set Ped'}</button>
-                                            <button className="text-[13px] bg-neutral-800 border border-neutral-600 rounded-full px-3 py-1.5 w-full
+                                            <button onClick={() => changePedModel(player?.ped, undefined, true)} className="text-[13px] bg-neutral-800 border border-neutral-600 rounded-full px-3 py-1.5 w-full
                                             hover:bg-neutral-700 hover:border-neutral-500 duration-200">{Locale.ui_set_ped_perm || 'Set Ped (perm)'}</button>
                                         </div>
                                     </div>
