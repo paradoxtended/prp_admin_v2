@@ -16,3 +16,4 @@
 ---@field coords { x: number, y: number, z: number };
 ---@field account { bank: number, cash: number };
 ---@field jobs { name: string, label: string, grade: number | string };
+---@field ped number | string;

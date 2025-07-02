@@ -2,6 +2,7 @@ lib.locale()
 
 require 'modules.account.server'
 require 'modules.job.server'
+require 'modules.peds.server'
 
 ---Function yoinked from https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/GetPlayerIdentifiers/
 ---@param playerId number
@@ -100,6 +101,7 @@ lib.callback.register('prp_admin_v2:getPlayerData', function(source, playerId)
         },
         coords = { x = coords.x, y = coords.y, z = coords.z },
         account = { bank = target:getAccountMoney('bank'), cash = target:getAccountMoney('money') },
-        jobs = { name = select(1, target:getJob()), label = select(2, target:getJob()), grade = select(2, target:getJobGrade()) }
+        jobs = { name = select(1, target:getJob()), label = select(2, target:getJob()), grade = select(2, target:getJobGrade()) },
+        ped = GetEntityModel(GetPlayerPed(playerId))
     }
 end)

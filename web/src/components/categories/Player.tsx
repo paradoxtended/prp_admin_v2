@@ -7,27 +7,33 @@ import { Locale } from "../store/locale";
 import { setClipboard } from "../../utils/setClipboard";
 import AccountModal from "./ui/AccountModal";
 import JobModal from "./ui/JobModal";
+import PedsModal from "./ui/PedsModal";
 
 interface PlayerProps {
     banned: boolean;
     identifiers?: { steam?: string, license?: string, discord?: string };
     coords: { x: number, y: number, z: number };
     account: { bank: number, cash: number };
-    jobs: { name: string; label: string; grade: string | number }
+    jobs: { name: string; label: string; grade: string | number };
+    ped: number | string;
 }
 
 const Player: React.FC<{
     data: PlayerData;
-}> = ({ data }) => {
+    peds: any;
+}> = ({ data, peds }) => {
     const [visible, setVisible] = useState<boolean>(false);
+    const [imgError, setImgError] = useState(false);
     const [player, setPlayer] = useState<PlayerProps | null>(null);
 
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState<boolean>(false);
 
-    const [accountModal, setAccountModal] = useState(false);
+    const [accountModal, setAccountModal] = useState<boolean>(false);
     const [account, setAccount] = useState<{ type: string | null, action: string | null }>({ type: null, action: null });
 
-    const [jobModal, setJobModal] = useState(false);
+    const [jobModal, setJobModal] = useState<boolean>(false);
+
+    const [pedModal, setPedModal] = useState<boolean>(false);
 
     const fetchPlayer = async (id: number, load?: boolean) => {
         if (load) setVisible(false);
@@ -42,7 +48,8 @@ const Player: React.FC<{
                 },
                 coords: { x: 841.6, y: 3785.3, z: 458.2 },
                 account: { bank: 750, cash: 11548 },
-                jobs: { name: 'government', label: 'Government', grade: 3 }
+                jobs: { name: 'government', label: 'Government', grade: 3 },
+                ped: -509558803
             });
 
             setTimeout(() => setVisible(true), 500);
@@ -63,6 +70,19 @@ const Player: React.FC<{
     useEffect(() => {
         fetchPlayer(data.id, true);
     }, []);
+
+    useEffect(() => {
+        if (typeof player?.ped === 'number' && peds.length) {
+            const ped = peds.find((model: any) => 
+                model.SignedHash === player.ped
+            );
+
+            setPlayer((prev) => ({
+                ...prev!,
+                ped: ped.Name.toLowerCase()
+            }))
+        }
+    }, [player?.ped, peds])
 
     const changeAccountAmount = (type?: 'bank' | 'money', action?: 'add' | 'remove', amount?: number) => {
         if (amount && amount !== 0) {
@@ -108,6 +128,25 @@ const Player: React.FC<{
 
         setJobModal(true);
         setShowModal(true);
+    };
+
+    const changePedModel = (model: string | number | undefined, reset?: boolean) => {
+        if (reset) {
+            fetchNui('reset_model', Number(data.id))
+
+            // Wait for ped to change
+            setTimeout(() => fetchPlayer(data.id), 250);
+
+            return
+        }
+
+        fetchNui('set_model', {
+            target: data.id,
+            model: model
+        })
+
+        // Wait for ped to change
+        setTimeout(() => fetchPlayer(data.id), 250);
     };
 
     return (
@@ -192,17 +231,17 @@ const Player: React.FC<{
                             <div className="flex items-center gap-3">
                                 <div className="bg-neutral-900 w-1/2 px-5 py-4 rounded-md border border-neutral-700 text-white flex flex-col gap-3 h-full">
                                     <div className="flex items-center justify-between">
-                                        <p className="font-semibold">{Locale.ui_stateId || 'State ID'}</p>
-                                        <button onClick={() => setClipboard(data.id.toString())} className="bg-neutral-800 px-3 py-1 rounded-full border text-sm border-neutral-700 hover:bg-neutral-700
-                                        duration-200 hover:border-neutral-500">{Locale.ui_copy|| 'Copy'}</button>
+                                        <p className="font-semibold text-[15px]">{Locale.ui_stateId || 'State ID'}</p>
+                                        <button onClick={() => setClipboard(data.id.toString())} className="bg-neutral-800 px-3 py-1 rounded-full border text-[13px] 
+                                        border-neutral-700 hover:bg-neutral-700 duration-200 hover:border-neutral-500">{Locale.ui_copy|| 'Copy'}</button>
                                     </div>
                                     <p className="text-xl font-bold">{data.id}</p>
                                 </div>
                                 <div className="bg-neutral-900 w-1/2 px-5 py-4 rounded-md border border-neutral-700 text-white flex flex-col gap-3 h-full">
                                     <div className="flex items-center justify-between">
-                                        <p className="font-semibold">{Locale.ui_current_coords || 'Current Coords'}</p>
+                                        <p className="font-semibold text-[15px]">{Locale.ui_current_coords || 'Current Coords'}</p>
                                         <button onClick={() => setClipboard(`${player?.coords.x}, ${player?.coords.y}, ${player?.coords.z}`)} 
-                                        className="bg-neutral-800 px-3 py-1 rounded-full border text-sm border-neutral-700 hover:bg-neutral-700
+                                        className="bg-neutral-800 px-3 py-1 rounded-full border text-[13px] border-neutral-700 hover:bg-neutral-700
                                         duration-200 hover:border-neutral-500">{Locale.ui_copy|| 'Copy'}</button>
                                     </div>
                                     <div className="text-sm flex items-center gap-2">
@@ -223,7 +262,7 @@ const Player: React.FC<{
                             </div>
                             <div className="flex items-center gap-3">
                                 <div className="bg-neutral-900 w-1/2 px-5 py-4 rounded-md border border-neutral-700 text-white flex flex-col gap-3">
-                                    <p className="font-semibold">{Locale.ui_bank_account || 'Bank Account'}</p>
+                                    <p className="font-semibold text-[15px]">{Locale.ui_bank_account || 'Bank Account'}</p>
                                     <div className="flex items-center justify-between">
                                         <div className="flex flex-col gap-1 text-[13px]">
                                             <p className="text-neutral-500">{Locale.ui_money_amount || 'Money Amount'}</p>
@@ -231,12 +270,12 @@ const Player: React.FC<{
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between gap-3">
-                                        <button className="w-1/2 text-sm bg-neutral-800 border border-neutral-600 rounded-full py-1.5
+                                        <button className="w-1/2 text-[13px] bg-neutral-800 border border-neutral-600 rounded-full py-1.5
                                         hover:bg-neutral-700 hover:border-neutral-500 duration-200"
                                         onClick={() => changeAccountAmount('bank', 'add')}>
                                             {Locale.ui_add_money || 'Add Money'}
                                         </button>
-                                        <button className="w-1/2 text-sm bg-neutral-800 border border-neutral-600 rounded-full py-1.5
+                                        <button className="w-1/2 text-[13px] bg-neutral-800 border border-neutral-600 rounded-full py-1.5
                                         hover:bg-neutral-700 hover:border-neutral-500 duration-200"
                                         onClick={() => changeAccountAmount('bank', 'remove')}>
                                             {Locale.ui_remove_money || 'Remove Money'}
@@ -244,7 +283,7 @@ const Player: React.FC<{
                                     </div>
                                 </div>
                                 <div className="bg-neutral-900 w-1/2 px-5 py-4 rounded-md border border-neutral-700 text-white flex flex-col gap-3">
-                                    <p className="font-semibold">{Locale.ui_money || 'Money'}</p>
+                                    <p className="font-semibold text-[15px]">{Locale.ui_money || 'Money'}</p>
                                     <div className="flex items-center justify-between">
                                         <div className="flex flex-col gap-1 text-[13px]">
                                             <p className="text-neutral-500">{Locale.ui_money_amount || 'Money Amount'}</p>
@@ -252,12 +291,12 @@ const Player: React.FC<{
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between gap-3">
-                                        <button className="w-1/2 text-sm bg-neutral-800 border border-neutral-600 rounded-full py-1.5
+                                        <button className="w-1/2 text-[13px] bg-neutral-800 border border-neutral-600 rounded-full py-1.5
                                         hover:bg-neutral-700 hover:border-neutral-500 duration-200"
                                         onClick={() => changeAccountAmount('money', 'add')}>
                                             {Locale.ui_add_money || 'Add Money'}
                                         </button>
-                                        <button className="w-1/2 text-sm bg-neutral-800 border border-neutral-600 rounded-full py-1.5
+                                        <button className="w-1/2 text-[13px] bg-neutral-800 border border-neutral-600 rounded-full py-1.5
                                         hover:bg-neutral-700 hover:border-neutral-500 duration-200"
                                         onClick={() => changeAccountAmount('money', 'remove')}>
                                             {Locale.ui_remove_money || 'Remove Money'}
@@ -267,8 +306,8 @@ const Player: React.FC<{
                             </div>
                             <div className="bg-neutral-900 px-5 py-4 rounded-md border border-neutral-700 text-white flex flex-col gap-3">
                                 <div className="flex items-center justify-between">
-                                    <p className="font-semibold">{Locale.ui_current_job || 'Current Job'}</p>
-                                    <button onClick={() => changeJob()} className="text-sm bg-neutral-800 border border-neutral-600 rounded-full px-3 py-1.5
+                                    <p className="font-semibold text-[15px]">{Locale.ui_current_job || 'Current Job'}</p>
+                                    <button onClick={() => changeJob()} className="text-[13px] bg-neutral-800 border border-neutral-600 rounded-full px-3 py-1.5
                                     hover:bg-neutral-700 hover:border-neutral-500 duration-200">{Locale.ui_change_job || 'Change Job'}</button>
                                 </div>
                                 <div className="flex items-center gap-16">
@@ -285,8 +324,48 @@ const Player: React.FC<{
                                         <p className="font-semibold">{player?.jobs.grade}</p>
                                     </div>
                                 </div>
-                                <button onClick={() => changeJob(undefined, undefined, true)} className="w-fit text-sm bg-neutral-800 border border-neutral-600 rounded-full px-3 py-1.5
+                                <button onClick={() => changeJob(undefined, undefined, true)} className="w-fit text-[13px] bg-neutral-800 border border-neutral-600 rounded-full px-3 py-1.5
                                 hover:bg-neutral-700 hover:border-neutral-500 duration-200">{Locale.ui_remove_job || 'Remove Job'}</button>
+                            </div>
+                            <div className="bg-neutral-900 px-5 py-4 rounded-md border border-neutral-700 text-white flex flex-col gap-3">
+                                <div className="flex items-center justify-between">
+                                    <p className="font-semibold text-[15px]">{Locale.ui_custom_model || 'Custom Model'}</p>
+                                    <button onClick={() => changePedModel(undefined, true)} className="text-[13px] bg-neutral-800 border border-neutral-600 rounded-full px-3 py-1.5
+                                    hover:bg-neutral-700 hover:border-neutral-500 duration-200">{Locale.ui_reset_model || 'Reset Model'}</button>
+                                </div>
+                                <div className="flex items-center gap-5">
+                                    <div className="bg-neutral-800 w-1/4 h-40 rounded-lg border border-neutral-600 flex items-center justify-center">
+                                        <img 
+                                            src={`https://docs.fivem.net/peds/${player?.ped}.webp`}
+                                            className="max-w-[130px] max-h-[130px]"
+                                            onError={() => setImgError(true)}
+                                            onLoad={() => setImgError(false)}
+                                            style={{ display: imgError ? "none" : "block" }}
+                                        />
+                                    </div>
+                                    <div className="w-3/4 flex flex-col gap-3">
+                                        <div className="text-[13px] flex flex-col gap-1">
+                                            <p className="font-medium">{Locale.ui_ped_model || 'Ped Model'}</p>
+                                            <input type="text"
+                                            value={player?.ped}
+                                            onChange={(e) => setPlayer((prev) => ({
+                                                ...prev!,
+                                                ped: e.target.value
+                                            }))}
+                                            placeholder={Locale.ui_ped_model || 'Ped Model'}
+                                            className="w-full focus:outline-none bg-neutral-800 border border-neutral-700 rounded px-2 py-1.5 placeholder:text-neutral-500
+                                            focus:border-lime-600"/>
+                                        </div>
+                                        <div className="flex items-center w-full gap-3">
+                                            <button onClick={() => { setPedModal(true); setShowModal(true); }} className="text-[13px] bg-neutral-800 border border-neutral-600 rounded-full px-3 py-1.5 w-full
+                                            hover:bg-neutral-700 hover:border-neutral-500 duration-200">{Locale.ui_browse_models || 'Browse Models'}</button>
+                                            <button onClick={() => changePedModel(player?.ped)} className="text-[13px] bg-neutral-800 border border-neutral-600 rounded-full px-3 py-1.5 w-full
+                                            hover:bg-neutral-700 hover:border-neutral-500 duration-200">{Locale.ui_set_ped || 'Set Ped'}</button>
+                                            <button className="text-[13px] bg-neutral-800 border border-neutral-600 rounded-full px-3 py-1.5 w-full
+                                            hover:bg-neutral-700 hover:border-neutral-500 duration-200">{Locale.ui_set_ped_perm || 'Set Ped (perm)'}</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -313,6 +392,22 @@ const Player: React.FC<{
                     onConfirm={(data: { name: string, grade: number }) => {
                         changeJob(data.name, data.grade);
                         setJobModal(false);
+                        setShowModal(false);
+                    }}
+                />
+                <PedsModal
+                    peds={peds}
+                    visible={pedModal}
+                    onClose={() => {
+                        setPedModal(false);
+                        setShowModal(false);
+                    }}
+                    onConfirm={(model: string) => {
+                        setPlayer((prev) => ({
+                            ...prev!,
+                            ped: model
+                        }));
+                        setPedModal(false);
                         setShowModal(false);
                     }}
                 />

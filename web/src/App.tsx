@@ -41,8 +41,37 @@ const App: React.FC = () => {
   ]);
   const currentCategory = categories.find(c => c.active)?.name || 'dashboard';
   const [player, setPlayer] = useState<Player | null>(null);
+  const [peds, setPeds] = useState();
 
-  useNuiEvent('openAdmin', (data: OpenData) => {
+  async function fetchPeds() {
+   const headers = {};
+
+    const response = await fetch('https://raw.githubusercontent.com/DurtyFree/gta-v-data-dumps/refs/heads/master/peds.json', {
+      headers: headers
+    });
+
+    if (response.status === 304) {
+      return;
+    }
+
+    if (!response.ok) throw new Error(response.statusText);
+
+    return await response.json();
+  }
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const peds = await fetchPeds();
+        
+        setPeds(peds);
+      } catch (err) {
+        console.error('Error fetching peds:', err);
+      }
+    })();
+  }, []);
+
+  useNuiEvent('openAdmin', async (data: OpenData) => {
     setData(data);
     setVisible(true);
   });
@@ -89,7 +118,7 @@ const App: React.FC = () => {
           </div>
           <div className="w-full h-full">
             {currentCategory === 'dashboard' && <Dashboard data={data} changeCategory={(name: string) => changeCategory(name)}/>}
-            {currentCategory === 'players' && <Players data={data as OpenData} player={player} setPlayer={setPlayer} />}
+            {currentCategory === 'players' && <Players data={data as OpenData} player={player} setPlayer={setPlayer} peds={peds} />}
           </div>
         </div>
       </div>

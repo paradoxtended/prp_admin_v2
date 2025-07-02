@@ -2,6 +2,7 @@ lib.locale()
 
 require 'modules.account.client'
 require 'modules.job.client'
+require 'modules.peds.client'
 
 ---@param id number
 ---@param cb any

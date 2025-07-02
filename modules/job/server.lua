@@ -11,7 +11,7 @@ lib.callback.register('prp_admin_v2:change_job', function(source, data)
 
     local job = target:getJob()
 
-    if job == data.name then return end
+    if not data.name or not data.grade or job == data.name then return end
 
     target:setJob(data.name, data.grade)
 

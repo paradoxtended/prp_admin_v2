@@ -19,7 +19,8 @@ const Players: React.FC<{
     data: OpenData;
     player: PlayerData | null;
     setPlayer: (player: PlayerData | null) => void;
-}> = ({ data, player, setPlayer }) => {
+    peds: any;
+}> = ({ data, player, setPlayer, peds }) => {
     const [visible, setVisible] = useState<boolean>(false);
     const [query, setQuery] = useState('');
     const [tabs, setTabs] = useState<TabProps[]>([
@@ -122,7 +123,7 @@ const Players: React.FC<{
                 </div>
             </div>
         ) : player ? (
-            <Player data={player} />
+            <Player data={player} peds={peds} />
         ) : <Loading />
     )
 };
