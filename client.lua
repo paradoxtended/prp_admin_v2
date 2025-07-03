@@ -1,8 +1,16 @@
 lib.locale()
 
+------------------------------------------------------------------------------------------------------------------------------------
+--- Loading modules
+------------------------------------------------------------------------------------------------------------------------------------
 require 'modules.account.client'
 require 'modules.job.client'
 require 'modules.peds.client'
+require 'modules.revive.client'
+require 'modules.heal.client'
+require 'modules.kill.client'
+require 'modules.reset_bucket.client'
+require 'modules.spectate.client'
 
 ---@param id number
 ---@param cb any

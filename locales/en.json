@@ -1,4 +1,5 @@
 {
     "command_help": "Opens up admin menu.",
-    "action_success": "Action successfully performed."
+    "action_success": "Action successfully performed.",
+    "stop_spectating": "STOP SPECTATING"
 }

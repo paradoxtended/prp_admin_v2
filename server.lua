@@ -1,8 +1,16 @@
 lib.locale()
 
+------------------------------------------------------------------------------------------------------------------------------------
+--- Loading modules
+------------------------------------------------------------------------------------------------------------------------------------
 require 'modules.account.server'
 require 'modules.job.server'
 require 'modules.peds.server'
+require 'modules.revive.server'
+require 'modules.heal.server'
+require 'modules.kill.server'
+require 'modules.reset_bucket.server'
+
 local db = require 'modules.db.server'
 
 ---Function yoinked from https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/GetPlayerIdentifiers/
@@ -120,4 +128,11 @@ AddEventHandler('onResourceStop', function(resource)
 	if resource == cache.resource then
 		db.globalSave()
 	end
+end)
+
+---@param source number
+lib.callback.register('prp_admin_v2:isAdmin', function(source)
+    local player = Framework.getPlayerFromId(source)
+
+    return player and player:hasOneOfGroups(config.adminPanel.allowedGroups)
 end)
