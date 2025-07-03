@@ -71,7 +71,7 @@ const App: React.FC = () => {
     })();
   }, []);
 
-  useNuiEvent('openAdmin', async (data: OpenData) => {
+  useNuiEvent('openAdmin', (data: OpenData) => {
     setData(data);
     setVisible(true);
   });
@@ -117,8 +117,8 @@ const App: React.FC = () => {
             ))}
           </div>
           <div className="w-full h-full">
-            {currentCategory === 'dashboard' && <Dashboard data={data} changeCategory={(name: string) => changeCategory(name)}/>}
-            {currentCategory === 'players' && <Players data={data as OpenData} player={player} setPlayer={setPlayer} peds={peds} />}
+            {currentCategory === 'dashboard' && <Dashboard data={data} changeCategory={(name: string) => changeCategory(name)} setPlayer={(data: Player) => setPlayer(data)} />}
+            {currentCategory === 'players' && <Players data={data as OpenData} player={player} setPlayer={setPlayer} peds={peds} handleClose={handleClose} />}
           </div>
         </div>
       </div>

@@ -85,7 +85,7 @@ const PlayersTable: React.FC<{
                         </td>
                         <td className="text-center">
                             <i className="fa-solid fa-ellipsis-vertical text-neutral-600 cursor-pointer hover:text-neutral-500 duration-200
-                            px-2.5 py-1 hover:bg-neutral-700 rounded"></i>
+                            px-2.5 py-1 hover:bg-lime-500/20 rounded"></i>
                         </td>
                     </tr>
                 ))}

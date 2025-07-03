@@ -20,7 +20,8 @@ const Players: React.FC<{
     player: PlayerData | null;
     setPlayer: (player: PlayerData | null) => void;
     peds: any;
-}> = ({ data, player, setPlayer, peds }) => {
+    handleClose: () => void;
+}> = ({ data, player, setPlayer, peds, handleClose }) => {
     const [visible, setVisible] = useState<boolean>(false);
     const [query, setQuery] = useState('');
     const [tabs, setTabs] = useState<TabProps[]>([
@@ -123,7 +124,7 @@ const Players: React.FC<{
                 </div>
             </div>
         ) : player ? (
-            <Player data={player} peds={peds} />
+            <Player data={player} peds={peds} handleClose={handleClose} />
         ) : <Loading />
     )
 };

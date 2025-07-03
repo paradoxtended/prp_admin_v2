@@ -18,10 +18,24 @@ interface PlayerProps {
     ped: number | string;
 }
 
+const playerActions = (): Record<string, {name: string, label: string, shouldClose?: boolean}[] > => {
+    return {
+        [Locale.ui_general_settings || 'General settings']: [
+            { name: 'spectate', label: Locale.ui_spectate || 'Spectate', shouldClose: true },
+            { name: 'screenshot', label: Locale.ui_screenshot || 'Screenshot', shouldClose: true },
+            { name: 'revive', label: Locale.ui_revive || 'Revive' },
+            { name: 'heal', label: Locale.ui_heal || 'Heal' },
+            { name: 'kill', label: Locale.ui_kill || 'Kill' },
+            { name: 'reset_bucket', label: Locale.ui_reset_bucket || 'Reset bucket' },
+        ]
+    }
+}
+
 const Player: React.FC<{
     data: PlayerData;
     peds: any;
-}> = ({ data, peds }) => {
+    handleClose: () => void;
+}> = ({ data, peds, handleClose }) => {
     const [visible, setVisible] = useState<boolean>(false);
     const [imgError, setImgError] = useState(false);
     const [player, setPlayer] = useState<PlayerProps | null>(null);
@@ -148,6 +162,14 @@ const Player: React.FC<{
 
         // Wait for ped to change
         setTimeout(() => fetchPlayer(data.id), 250);
+    };
+
+    const performAction = (action: {name: string, label: string, shouldClose?: boolean}) => {
+        fetchNui(action.name, data.id)
+
+        if (action.shouldClose) {
+            handleClose()
+        }
     };
 
     return (
@@ -366,6 +388,25 @@ const Player: React.FC<{
                                             hover:bg-neutral-700 hover:border-neutral-500 duration-200">{Locale.ui_set_ped_perm || 'Set Ped (perm)'}</button>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="w-1/3 flex flex-col gap-3 pr-4">
+                            <div className="h-1/2 bg-neutral-900 border border-neutral-700 rounded px-5 py-4">
+                                <div className="text-white flex flex-col gap-3">
+                                    {Object.entries(playerActions()).map(([category, actions], index) => (
+                                        <div key={`action-${index}`} className="flex flex-col gap-2">
+                                            <p className="text-[13px] text-neutral-600">{category}</p>
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                {actions.map((action, index) => (
+                                                    <button onClick={() => performAction(action)}
+                                                    key={`action-button-${index}`}
+                                                    className="text-[13px] bg-neutral-800 px-3 py-1.5 rounded-full border border-neutral-600
+                                                    hover:bg-neutral-700 hover:border-neutral-500 duration-200">{action.label}</button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>

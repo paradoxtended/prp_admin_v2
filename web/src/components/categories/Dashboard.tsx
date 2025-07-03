@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import Loading from "../utils/Loading";
 import { Locale } from "../store/locale";
-import type { OpenData } from "../../typings/open";
+import type { OpenData, Player } from "../../typings/open";
 
 const Dashboard: React.FC<{ 
     data?: OpenData;
     changeCategory: (name: string) => void;
-}> = ({ data, changeCategory }) => {
+    setPlayer: (data: Player) => void;
+}> = ({ data, changeCategory, setPlayer }) => {
     const [visible, setVisible] = useState<boolean>(false);
 
     useEffect(() => {
@@ -43,7 +44,9 @@ const Dashboard: React.FC<{
                         </div>
                         <div className="mt-3 flex flex-col gap-2 h-56 overflow-auto px-5">
                             {data?.players.players.filter(ply => ply.admin === true).map((admin, index) => (
-                                <div key={`admin-${index}`} className="group flex items-center text-sm justify-between bg-[#202020] px-2 py-1 rounded-md border border-neutral-600 cursor-pointer">
+                                <div key={`admin-${index}`} 
+                                className="group flex items-center text-sm justify-between bg-[#202020] px-2 py-1 rounded-md border border-neutral-600 cursor-pointer"
+                                onClick={() => { changeCategory('players'); setPlayer(admin) }}>
                                     <p className="group-hover:text-lime-500 duration-200">{admin.accName}</p>
                                     <p className="bg-lime-500/20 border border-lime-500 rounded-md px-1.5 py-0.5 text-[13px]">Admin</p>
                                 </div>
