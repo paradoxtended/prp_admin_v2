@@ -3,6 +3,7 @@ lib.locale()
 require 'modules.account.server'
 require 'modules.job.server'
 require 'modules.peds.server'
+local db = require 'modules.db.server'
 
 ---Function yoinked from https://docs.fivem.net/docs/scripting-reference/runtimes/lua/functions/GetPlayerIdentifiers/
 ---@param playerId number
@@ -104,4 +105,19 @@ lib.callback.register('prp_admin_v2:getPlayerData', function(source, playerId)
         jobs = { name = select(1, target:getJob()), label = select(2, target:getJob()), grade = select(2, target:getJobGrade()) },
         ped = GetEntityModel(GetPlayerPed(playerId))
     }
+end)
+
+-- Database
+AddEventHandler('txAdmin:events:serverShuttingDown', db.globalSave)
+
+AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
+    if eventData.secondsRemaining ~= 60 then return end
+
+	db.globalSave()
+end)
+
+AddEventHandler('onResourceStop', function(resource)
+	if resource == cache.resource then
+		db.globalSave()
+	end
 end)

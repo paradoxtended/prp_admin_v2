@@ -53,3 +53,14 @@ RegisterNuiCallback('set_model', function(data, cb)
         })
     end
 end)
+
+local function onPlayerSpawn()
+    local customModel = lib.callback.await('prp_admin_v2:hasCustomModel', false)
+
+    if customModel then
+        TriggerEvent('prp_admin_v2:set_model', customModel)
+    end
+end
+
+AddEventHandler('playerSpawned', onPlayerSpawn)
+Framework.onPlayerLoaded(onPlayerSpawn)

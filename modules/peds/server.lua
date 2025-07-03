@@ -1,3 +1,28 @@
+local db = require 'modules.db.server'
+
+---@type table<string, string | number>
+PedModels = {}
+
+MySQL.ready(function()
+    MySQL.query.await(
+        [[
+            CREATE TABLE IF NOT EXISTS `prp_admin_peds` (
+                `identifier` varchar(50) NOT NULL,
+                `model` longtext NOT NULL,
+                PRIMARY KEY (`identifier`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+        ]]
+    )
+
+    local data = MySQL.query.await('SELECT * FROM prp_admin_peds')
+
+    for _, entry in ipairs(data) do
+        PedModels[entry.identifier] = entry.model
+    end
+end)
+
+lib.cron.new('*/30 * * * *', db.savePedModels)
+
 ---@param source number
 ---@param targetId number
 lib.callback.register('prp_admin_v2:reset_model', function(source, targetId)
@@ -9,9 +34,11 @@ lib.callback.register('prp_admin_v2:reset_model', function(source, targetId)
 
     if not target then return end
 
-    if PedModels[target:getIdentifier()] then
-        PedModels[target:getIdentifier()] = nil
-        SaveResourceFile(GetCurrentResourceName(), 'data/pedModels.json', json.encode(PedModels, { indent = true }), -1)
+    local identifier = target:getIdentifier()
+
+    if PedModels[identifier] then
+        PedModels[identifier] = nil
+        db.deletePed(identifier)
     end
 
     TriggerClientEvent('prp_admin_v2:reset_model', target.source)
@@ -32,10 +59,18 @@ lib.callback.register('prp_admin_v2:set_model', function(source, data)
 
     if data.perm then
         PedModels[target:getIdentifier()] = data.model
-        SaveResourceFile(GetCurrentResourceName(), 'data/pedModels.json', json.encode(PedModels, { indent = true }), -1)
     end
 
     TriggerClientEvent('prp_admin_v2:set_model', target.source, data.model)
 
     return true
+end)
+
+---@param source number
+lib.callback.register('prp_admin_v2:hasCustomModel', function(source)
+    local player = Framework.getPlayerFromId(source)
+
+    if not player then return end
+
+    return PedModels[player:getIdentifier()]
 end)
