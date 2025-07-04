@@ -42,6 +42,7 @@ const App: React.FC = () => {
   const currentCategory = categories.find(c => c.active)?.name || 'dashboard';
   const [player, setPlayer] = useState<Player | null>(null);
   const [peds, setPeds] = useState();
+  const [screenshot, setScreenshot] = useState<any | null>(null);
 
   async function fetchPeds() {
    const headers = {};
@@ -76,14 +77,19 @@ const App: React.FC = () => {
     setVisible(true);
   });
 
+  useNuiEvent('screenshot', (image: string) => {
+    setScreenshot(image);
+  })
+
   const handleClose = () => {
     setVisible(false);
+    setScreenshot(null);
     fetchNui('closeAdmin');
   };
 
   // Hides the context menu on ESC
   useEffect(() => {
-    if (!visible) return;
+    if (!visible && !screenshot) return;
 
     const keyHandler = (e: KeyboardEvent) => {
       if (['Escape'].includes(e.code)) handleClose();
@@ -92,7 +98,7 @@ const App: React.FC = () => {
     window.addEventListener('keydown', keyHandler);
 
     return () => window.removeEventListener('keydown', keyHandler);
-  }, [visible]);
+  }, [visible, screenshot]);
 
   const changeCategory = (name: string) => {
     if (name === 'players' && currentCategory === 'players') setPlayer(null);
@@ -106,23 +112,31 @@ const App: React.FC = () => {
   }
 
   return (
-    <Fade in={visible}>
-      <div className="font-[Inter] h-2/3 w-3/5 bg-gradient-to-r from-black to-[#122202] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded
-      border-2 border-gray-500">
-        <Header exit={() => handleClose()} />
-        <div className="flex h-[85%]">
-          <div className="w-fit px-10 flex flex-col gap-3">
-            {categories.map((category, index) => (
-              <Category key={`category-${index}`} icon={category.icon} active={category?.active} setactive={() => changeCategory(category.name)} />
-            ))}
-          </div>
-          <div className="w-full h-full">
-            {currentCategory === 'dashboard' && <Dashboard data={data} changeCategory={(name: string) => changeCategory(name)} setPlayer={(data: Player) => setPlayer(data)} />}
-            {currentCategory === 'players' && <Players data={data as OpenData} player={player} setPlayer={setPlayer} peds={peds} handleClose={handleClose} />}
+    <>
+      <Fade in={screenshot ? true :false}>
+        <img
+          src={screenshot}
+          className="w-[1500px] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 rounded border border-neutral-900"
+        />
+      </Fade>
+      <Fade in={visible}>
+        <div className="font-[Inter] h-2/3 w-3/5 bg-gradient-to-r from-black to-[#122202] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded
+        border-2 border-gray-500">
+          <Header exit={() => handleClose()} />
+          <div className="flex h-[85%]">
+            <div className="w-fit px-10 flex flex-col gap-3">
+              {categories.map((category, index) => (
+                <Category key={`category-${index}`} icon={category.icon} active={category?.active} setactive={() => changeCategory(category.name)} />
+              ))}
+            </div>
+            <div className="w-full h-full">
+              {currentCategory === 'dashboard' && <Dashboard data={data} changeCategory={(name: string) => changeCategory(name)} setPlayer={(data: Player) => setPlayer(data)} />}
+              {currentCategory === 'players' && <Players data={data as OpenData} player={player} setPlayer={setPlayer} peds={peds} handleClose={handleClose} />}
+            </div>
           </div>
         </div>
-      </div>
-    </Fade>
+      </Fade>
+    </>
   )
 };
 

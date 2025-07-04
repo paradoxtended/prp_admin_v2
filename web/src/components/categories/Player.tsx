@@ -27,6 +27,10 @@ const playerActions = (): Record<string, {name: string, label: string, shouldClo
             { name: 'heal', label: Locale.ui_heal || 'Heal' },
             { name: 'kill', label: Locale.ui_kill || 'Kill' },
             { name: 'reset_bucket', label: Locale.ui_reset_bucket || 'Reset bucket' },
+            { name: 'open_inventory', label: Locale.ui_open_inventory || 'Open Inventory', shouldClose: true },
+            { name: 'freeze', label: Locale.ui_freeze || 'Freeze' },
+            { name: 'mute', label: Locale.ui_mute || 'Mute' },
+            { name: 'clothing_menu', label: Locale.ui_clothing_menu || 'Clothing Menu' }
         ]
     }
 }

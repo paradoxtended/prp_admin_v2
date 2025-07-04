@@ -1,7 +1,7 @@
 lib.locale()
 
 ------------------------------------------------------------------------------------------------------------------------------------
---- Loading modules
+--- MODULES
 ------------------------------------------------------------------------------------------------------------------------------------
 require 'modules.account.server'
 require 'modules.job.server'
@@ -10,6 +10,10 @@ require 'modules.revive.server'
 require 'modules.heal.server'
 require 'modules.kill.server'
 require 'modules.reset_bucket.server'
+require 'modules.screenshot.server'
+require 'modules.inventory.server'
+require 'modules.mute.server'
+require 'modules.clothing_menu.server'
 
 local db = require 'modules.db.server'
 

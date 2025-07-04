@@ -1,5 +1,7 @@
 {
     "command_help": "Opens up admin menu.",
     "action_success": "Action successfully performed.",
-    "stop_spectating": "STOP SPECTATING"
+    "stop_spectating": "STOP SPECTATING",
+    "screenshot_failed": "Failed to get screenshot from player.",
+    "cant_open_inventory": "You can't open your inventory this way."
 }
