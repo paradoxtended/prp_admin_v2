@@ -10,6 +10,7 @@ import PedsModal from "./ui/PedsModal";
 import RightSide from "./player/RightSide";
 import LeftSide from "./player/LeftSide";
 import ItemModal from "./ui/ItemModal";
+import NameModal from "./ui/NameModal";
 
 export interface PlayerProps {
     banned: boolean;
@@ -31,7 +32,8 @@ const Player: React.FC<{
     data: PlayerData;
     peds: any;
     handleClose: () => void;
-}> = ({ data, peds, handleClose }) => {
+    onNameUpdate?: (name: string) => void;
+}> = ({ data, peds, handleClose, onNameUpdate }) => {
     const [visible, setVisible] = useState<boolean>(false);
     const [player, setPlayer] = useState<PlayerProps | null>(null);
 
@@ -44,7 +46,8 @@ const Player: React.FC<{
 
     const [pedModal, setPedModal] = useState<boolean>(false);
 
-    const [itemModal, setItemModal]= useState<boolean>(false);
+    const [itemModal, setItemModal] = useState<boolean>(false);
+    const [namesModal, setNamesModal] = useState<boolean>(false);
 
     const playerActions = (): Record<string, PlayerActionsProps[]> => {
         return {
@@ -59,7 +62,8 @@ const Player: React.FC<{
                 { name: 'freeze', label: Locale.ui_freeze || 'Freeze' },
                 { name: 'mute', label: Locale.ui_mute || 'Mute' },
                 { name: 'clothing_menu', label: Locale.ui_clothing_menu || 'Clothing Menu' },
-                { name: 'give_item', label: Locale.ui_give_item || 'Give Item', modal: setItemModal }
+                { name: 'give_item', label: Locale.ui_give_item || 'Give Item', modal: setItemModal },
+                { name: 'update_name', label: Locale.ui_update_char_names || 'Update character names', modal: setNamesModal }
             ]
         }
     }
@@ -244,6 +248,31 @@ const Player: React.FC<{
                         item.id = Number(data.id);
 
                         fetchNui('give_item', item);
+                    }}
+                />
+                <NameModal 
+                    name={data.charName}
+                    visible={namesModal}
+                    onClose={() => {
+                        setNamesModal(false);
+                        setShowModal(false);
+                    }}
+                    onConfirm={(names: { firstname?: string, lastname?: string, id?: number }) => {
+                        setNamesModal(false);
+                        setShowModal(false);
+
+                        if (!names.firstname || !names.lastname || names.firstname === '' || names.lastname === '') {
+                            return
+                        }
+
+                        names.id = data.id
+                        
+                        fetchNui('update_character_names', names);
+                        onNameUpdate?.(`${names.firstname.charAt(0).toUpperCase() + names.firstname.slice(1)} ${names.lastname.charAt(0).toUpperCase() + names.lastname.slice(1)}`);
+                        fetchPlayer(data.id);
+
+                        // Close admin menu so new name will be updated everywhere
+                        handleClose();
                     }}
                 />
             </>

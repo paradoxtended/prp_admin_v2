@@ -124,7 +124,7 @@ const Players: React.FC<{
                 </div>
             </div>
         ) : player ? (
-            <Player data={player} peds={peds} handleClose={handleClose} />
+            <Player data={player} peds={peds} handleClose={handleClose} onNameUpdate={(name: string) => setPlayer({ ...player, charName: name })} />
         ) : <Loading />
     )
 };
