@@ -18,33 +18,36 @@ const AccountModal: React.FC<{
 
     return (
         <Fade in={visible}>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto opacity-100">
-                <div className="bg-neutral-900 w-96 text-white flex flex-col p-3 gap-5 rounded border border-neutral-700">
-                    <p className="mx-auto font-semibold">
-                        {title}
-                    </p>
-                    <div className="flex flex-col gap-2">
-                        <input type="number"
-                        onChange={(e) => setAmount(e.target.value)}
-                        placeholder={Locale.ui_enter_ammount || 'Enter amount'}
-                        className="w-full bg-neutral-800 border border-neutral-700 focus:outline-none focus:border-lime-600 rounded px-3 py-1 text-sm
-                        placeholder:text-neutral-500"/>
+            <div>
+                <div className="fixed inset-0 bg-black bg-opacity-70 z-20 pointer-events-none" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto opacity-100 z-50">
+                    <div className="bg-neutral-900 w-96 text-white flex flex-col p-3 gap-5 rounded border border-neutral-700">
+                        <p className="mx-auto font-semibold">
+                            {title}
+                        </p>
+                        <div className="flex flex-col gap-2">
+                            <input type="number"
+                            onChange={(e) => setAmount(e.target.value)}
+                            placeholder={Locale.ui_enter_ammount || 'Enter amount'}
+                            className="w-full bg-neutral-800 border border-neutral-700 focus:outline-none focus:border-lime-600 rounded px-3 py-1 text-sm
+                            placeholder:text-neutral-500"/>
 
-                        <div className="flex text-sm items-center justify-end gap-1">
-                            <button className="bg-neutral-800 border border-neutral-700 rounded-full px-3 py-1 hover:border-lime-600 hover:bg-lime-500/20 duration-200"
-                            onClick={() => onConfirm(Number(1000))}>$1000</button>
-                            <button className="bg-neutral-800 border border-neutral-700 rounded-full px-3 py-1 hover:border-lime-600 hover:bg-lime-500/20 duration-200"
-                            onClick={() => onConfirm(Number(2500))}>$2500</button>
-                            <button className="bg-neutral-800 border border-neutral-700 rounded-full px-3 py-1 hover:border-lime-600 hover:bg-lime-500/20 duration-200"
-                            onClick={() => onConfirm(Number(5000))}>$5000</button>
+                            <div className="flex text-sm items-center justify-end gap-1">
+                                <button className="bg-neutral-800 border border-neutral-700 rounded-full px-3 py-1 hover:border-lime-600 hover:bg-lime-500/20 duration-200"
+                                onClick={() => onConfirm(Number(1000))}>$1000</button>
+                                <button className="bg-neutral-800 border border-neutral-700 rounded-full px-3 py-1 hover:border-lime-600 hover:bg-lime-500/20 duration-200"
+                                onClick={() => onConfirm(Number(2500))}>$2500</button>
+                                <button className="bg-neutral-800 border border-neutral-700 rounded-full px-3 py-1 hover:border-lime-600 hover:bg-lime-500/20 duration-200"
+                                onClick={() => onConfirm(Number(5000))}>$5000</button>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="text-sm flex items-center gap-3">
-                        <button className="bg-red-700/50 border border-red-600 rounded-full w-1/2 py-1 hover:bg-red-700/30 duration-200"
-                        onClick={onClose}>{Locale.ui_cancel || 'Cancel'}</button>
-                        <button className="bg-lime-500/20 border border-lime-600 rounded-full w-1/2 py-1 hover:bg-lime-500/30 duration-200"
-                        onClick={() => onConfirm(Number(amount))}>{Locale.ui_confirm || 'Confirm'}</button>
+                        <div className="text-sm flex items-center gap-3">
+                            <button className="bg-red-700/50 border border-red-600 rounded-full w-1/2 py-1 hover:bg-red-700/30 duration-200"
+                            onClick={onClose}>{Locale.ui_cancel || 'Cancel'}</button>
+                            <button className="bg-lime-500/20 border border-lime-600 rounded-full w-1/2 py-1 hover:bg-lime-500/30 duration-200"
+                            onClick={() => onConfirm(Number(amount))}>{Locale.ui_confirm || 'Confirm'}</button>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -9,6 +9,7 @@ import Category from "./components/Category";
 import Dashboard from "./components/categories/Dashboard";
 import type { OpenData, Player } from "./typings/open";
 import Players from "./components/categories/Players";
+import { isEnvBrowser } from "./utils/misc";
 
 debugData<OpenData>([
   {
@@ -43,6 +44,7 @@ const App: React.FC = () => {
   const [player, setPlayer] = useState<Player | null>(null);
   const [peds, setPeds] = useState();
   const [screenshot, setScreenshot] = useState<any | null>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   async function fetchPeds() {
    const headers = {};
@@ -87,8 +89,31 @@ const App: React.FC = () => {
     fetchNui('closeAdmin');
   };
 
+  useEffect(() => {
+    const root = document.getElementById('root');
+
+    if (!showModal) {
+      if (isEnvBrowser()) {
+        // https://i.imgur.com/iPTAdYV.png - Night time img
+        root!.style.backgroundImage = 'url("https://i.imgur.com/3pzRj9n.png")';
+        root!.style.backgroundSize = 'cover';
+        root!.style.backgroundRepeat = 'no-repeat';
+        root!.style.backgroundPosition = 'center';
+
+        return;
+      }
+
+      root!.style.background = 'none';
+    } else {
+      root!.style.background = 'rgba(0, 0, 0, 0.85)';
+    }
+  }, [showModal]);
+
   // Hides the context menu on ESC
   useEffect(() => {
+    if (!isEnvBrowser()) document.getElementById('root')!.style.background = 'none';
+    setShowModal(false);
+
     if (!visible && !screenshot) return;
 
     const keyHandler = (e: KeyboardEvent) => {
@@ -120,8 +145,8 @@ const App: React.FC = () => {
         />
       </Fade>
       <Fade in={visible}>
-        <div className="font-[Inter] h-2/3 w-3/5 bg-gradient-to-r from-black to-[#122202] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded
-        border-2 border-gray-500">
+        <div className={`font-[Inter] h-2/3 w-3/5 bg-gradient-to-r from-[#000000f9] to-[#122202f9] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded
+        border-2 border-gray-500 ${showModal && 'pointer-events-none'}`}>
           <Header exit={() => handleClose()} />
           <div className="flex h-[85%]">
             <div className="w-fit px-10 flex flex-col gap-3">
@@ -131,7 +156,7 @@ const App: React.FC = () => {
             </div>
             <div className="w-full h-full">
               {currentCategory === 'dashboard' && <Dashboard data={data} changeCategory={(name: string) => changeCategory(name)} setPlayer={(data: Player) => setPlayer(data)} />}
-              {currentCategory === 'players' && <Players data={data as OpenData} player={player} setPlayer={setPlayer} peds={peds} handleClose={handleClose} />}
+              {currentCategory === 'players' && <Players data={data as OpenData} player={player} setPlayer={setPlayer} peds={peds} handleClose={handleClose} setShowModal={setShowModal} />}
             </div>
           </div>
         </div>

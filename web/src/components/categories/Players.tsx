@@ -21,7 +21,8 @@ const Players: React.FC<{
     setPlayer: (player: PlayerData | null) => void;
     peds: any;
     handleClose: () => void;
-}> = ({ data, player, setPlayer, peds, handleClose }) => {
+    setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ data, player, setPlayer, peds, handleClose, setShowModal }) => {
     const [visible, setVisible] = useState<boolean>(false);
     const [query, setQuery] = useState('');
     const [tabs, setTabs] = useState<TabProps[]>([
@@ -124,7 +125,7 @@ const Players: React.FC<{
                 </div>
             </div>
         ) : player ? (
-            <Player data={player} peds={peds} handleClose={handleClose} onNameUpdate={(name: string) => setPlayer({ ...player, charName: name })} />
+            <Player data={player} peds={peds} handleClose={handleClose} onNameUpdate={(name: string) => setPlayer({ ...player, charName: name })} setShowModal={setShowModal} />
         ) : <Loading />
     )
 };

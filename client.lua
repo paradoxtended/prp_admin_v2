@@ -17,6 +17,8 @@ require 'modules.freeze.client'
 require 'modules.mute.client'
 require 'modules.clothing_menu.client'
 require 'modules.names.client'
+require 'modules.teleport.client'
+require 'modules.messages.client'
 
 ---@param id number
 ---@param cb any

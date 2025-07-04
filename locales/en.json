@@ -3,5 +3,6 @@
     "action_success": "Action successfully performed.",
     "stop_spectating": "STOP SPECTATING",
     "screenshot_failed": "Failed to get screenshot from player.",
-    "cant_open_inventory": "You can't open your inventory this way."
+    "cant_open_inventory": "You can't open your inventory this way.",
+    "no_vehicle_found": "Target player is not in vehicle and hasn't been in vehicle lately."
 }

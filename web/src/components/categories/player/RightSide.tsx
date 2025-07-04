@@ -27,7 +27,7 @@ const RightSide: React.FC<{
     
     return (
         <div className="w-1/3 flex flex-col gap-3 pr-4">
-            <div className="h-1/2 bg-neutral-900 border border-neutral-700 rounded px-5 py-4">
+            <div className="h-2/3 bg-neutral-900 border border-neutral-700 rounded px-5 py-4">
                 <div className="text-white flex flex-col gap-3">
                     {Object.entries(playerActions()).map(([category, actions], index) => (
                         <div key={`action-${index}`} className="flex flex-col gap-2">
@@ -37,7 +37,11 @@ const RightSide: React.FC<{
                                     <button onClick={() => performAction(action)}
                                     key={`action-button-${index}`}
                                     className="text-[13px] bg-neutral-800 px-3 py-1.5 rounded-full border border-neutral-600
-                                    hover:bg-neutral-700 hover:border-neutral-500 duration-200">{action.label}</button>
+                                    hover:bg-neutral-700 hover:border-neutral-500 duration-200"
+                                    style={{ 
+                                        border: `1px solid ${action.color}`, 
+                                        backgroundColor: action.color && `${action.color + 20}`,
+                                    }}>{action.label}</button>
                                 ))}
                             </div>
                         </div>

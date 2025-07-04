@@ -15,6 +15,7 @@ require 'modules.inventory.server'
 require 'modules.mute.server'
 require 'modules.clothing_menu.server'
 require 'modules.names.server'
+require 'modules.messages.server'
 
 local db = require 'modules.db.server'
 

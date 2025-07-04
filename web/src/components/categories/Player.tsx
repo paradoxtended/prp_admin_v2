@@ -11,6 +11,7 @@ import RightSide from "./player/RightSide";
 import LeftSide from "./player/LeftSide";
 import ItemModal from "./ui/ItemModal";
 import NameModal from "./ui/NameModal";
+import MessageModal from "./ui/MessageModal";
 
 export interface PlayerProps {
     banned: boolean;
@@ -26,6 +27,7 @@ export interface PlayerActionsProps {
     label: string; 
     shouldClose?: boolean; // If true, admin menu will close after selecting
     modal?: React.Dispatch<React.SetStateAction<boolean>>; // If defined then defined model will pop up
+    color?: string; // HEX value
 }
 
 const Player: React.FC<{
@@ -33,11 +35,10 @@ const Player: React.FC<{
     peds: any;
     handleClose: () => void;
     onNameUpdate?: (name: string) => void;
-}> = ({ data, peds, handleClose, onNameUpdate }) => {
+    setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ data, peds, handleClose, onNameUpdate, setShowModal }) => {
     const [visible, setVisible] = useState<boolean>(false);
     const [player, setPlayer] = useState<PlayerProps | null>(null);
-
-    const [showModal, setShowModal] = useState<boolean>(false);
 
     const [accountModal, setAccountModal] = useState<boolean>(false);
     const [account, setAccount] = useState<{ type: string | null, action: string | null }>({ type: null, action: null });
@@ -48,6 +49,7 @@ const Player: React.FC<{
 
     const [itemModal, setItemModal] = useState<boolean>(false);
     const [namesModal, setNamesModal] = useState<boolean>(false);
+    const [meMessage, setMeMessage] = useState<boolean>(false);
 
     const playerActions = (): Record<string, PlayerActionsProps[]> => {
         return {
@@ -64,6 +66,18 @@ const Player: React.FC<{
                 { name: 'clothing_menu', label: Locale.ui_clothing_menu || 'Clothing Menu' },
                 { name: 'give_item', label: Locale.ui_give_item || 'Give Item', modal: setItemModal },
                 { name: 'update_name', label: Locale.ui_update_char_names || 'Update character names', modal: setNamesModal }
+            ],
+            [Locale.ui_teleports || 'Teleports']: [
+                { name: 'teleport_to_player', label: Locale.ui_teleport_to_player || 'Teleport to Player', shouldClose: true },
+                { name: 'teleport_to_me', label: Locale.ui_teleport_to_me || 'Teleport Player to Me', shouldClose: true },
+                { name: 'teleport_to_car', label: Locale.ui_teleport_to_car || 'Teleport to Player\'s Car', shouldClose: true }
+            ],
+            [Locale.ui_narrative || 'Narrative']: [
+                { name: 'create_me_message', label: Locale.ui_create_me_message || 'Create Me Message', modal: setMeMessage }
+            ],
+            [Locale.ui_moderation || 'Moderation'] : [
+                { name: 'kick', label: Locale.ui_kick || 'Kick', color: '#eab308' },
+                { name: 'ban', label: Locale.ui_ban || 'Ban', color: '#ef4444' },
             ]
         }
     }
@@ -166,8 +180,7 @@ const Player: React.FC<{
     return (
         visible ? (
             <>
-                <div className={`h-full flex flex-col gap-3 overflow-auto mr-5 pb-1
-                ${showModal && 'pointer-events-none opacity-50'}`}>
+                <div className='h-full flex flex-col gap-3 overflow-auto mr-5 pb-1'>
                     <div className="flex text-white items-center justify-between pr-4">
                         <p className="font-bold text-3xl">{data.charName} ({data.id})</p>
                         <div className="flex items-center gap-2">
@@ -273,6 +286,26 @@ const Player: React.FC<{
 
                         // Close admin menu so new name will be updated everywhere
                         handleClose();
+                    }}
+                />
+                <MessageModal
+                    visible={meMessage}
+                    onClose={() => {
+                        setMeMessage(false);
+                        setShowModal(false);
+                    }}
+                    onConfirm={(message: string) => {
+                        setMeMessage(false);
+                        setShowModal(false);
+                        
+                        if (!message || message === '') {
+                            return
+                        }
+
+                        fetchNui('create_me_message', {
+                            message: message,
+                            id: data.id
+                        })
                     }}
                 />
             </>
