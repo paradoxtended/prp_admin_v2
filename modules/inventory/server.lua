@@ -12,6 +12,25 @@ elseif isStarted('qb-inventory') then
 end
 
 ---@param source number
+---@param data { name: string, amount?: number, json?: string, id: number }
+lib.callback.register('prp_admin_v2:give_item', function(source, data)
+    local player = Framework.getPlayerFromId(source)
+
+    if not player or not player:hasOneOfGroups(config.adminPanel.allowedGroups) then return end
+
+    local target = Framework.getPlayerFromId(data.id)
+
+    if not target then return end
+
+    local amount = data?.amount or 1
+    local metadata = data?.json and json.decode(data.json) or nil
+
+    target:addItem(data.name, amount, metadata)
+
+    return true
+end)
+
+---@param source number
 ---@param targetId number
 lib.callback.register('prp_admin_v2:open_inventory', function(source, targetId)
     local player = Framework.getPlayerFromId(source)
