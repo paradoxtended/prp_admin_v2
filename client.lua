@@ -19,6 +19,7 @@ require 'modules.clothing_menu.client'
 require 'modules.names.client'
 require 'modules.teleport.client'
 require 'modules.messages.client'
+require 'modules.kick.client'
 
 ---@param id number
 ---@param cb any

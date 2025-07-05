@@ -16,6 +16,7 @@ require 'modules.mute.server'
 require 'modules.clothing_menu.server'
 require 'modules.names.server'
 require 'modules.messages.server'
+require 'modules.kick.server'
 
 local db = require 'modules.db.server'
 

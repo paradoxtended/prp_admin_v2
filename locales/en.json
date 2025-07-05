@@ -4,5 +4,7 @@
     "stop_spectating": "STOP SPECTATING",
     "screenshot_failed": "Failed to get screenshot from player.",
     "cant_open_inventory": "You can't open your inventory this way.",
-    "no_vehicle_found": "Target player is not in vehicle and hasn't been in vehicle lately."
+    "no_vehicle_found": "Target player is not in vehicle and hasn't been in vehicle lately.",
+    "player_kicked": "Player %s has been kicked for: %s",
+    "kick_message": "[Admin] You have been kicked.\nReason: %s"
 }

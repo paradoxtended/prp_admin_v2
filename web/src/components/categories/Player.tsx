@@ -12,6 +12,8 @@ import LeftSide from "./player/LeftSide";
 import ItemModal from "./ui/ItemModal";
 import NameModal from "./ui/NameModal";
 import MessageModal from "./ui/MessageModal";
+import KickModal from "./ui/KickModal";
+import BanModal from "./ui/BanModal";
 
 export interface PlayerProps {
     banned: boolean;
@@ -50,6 +52,8 @@ const Player: React.FC<{
     const [itemModal, setItemModal] = useState<boolean>(false);
     const [namesModal, setNamesModal] = useState<boolean>(false);
     const [meMessage, setMeMessage] = useState<boolean>(false);
+    const [kickModal, setKickModal] = useState<boolean>(false);
+    const [banModal, setBanModal] = useState<boolean>(false);
 
     const playerActions = (): Record<string, PlayerActionsProps[]> => {
         return {
@@ -76,8 +80,8 @@ const Player: React.FC<{
                 { name: 'create_me_message', label: Locale.ui_create_me_message || 'Create Me Message', modal: setMeMessage }
             ],
             [Locale.ui_moderation || 'Moderation'] : [
-                { name: 'kick', label: Locale.ui_kick || 'Kick', color: '#eab308' },
-                { name: 'ban', label: Locale.ui_ban || 'Ban', color: '#ef4444' },
+                { name: 'kick', label: Locale.ui_kick || 'Kick', color: '#eab308', modal: setKickModal },
+                { name: 'ban', label: Locale.ui_ban || 'Ban', color: '#ef4444', modal: setBanModal },
             ]
         }
     }
@@ -303,6 +307,46 @@ const Player: React.FC<{
                         }
 
                         fetchNui('create_me_message', {
+                            message: message,
+                            id: data.id
+                        })
+                    }}
+                />
+                <KickModal
+                    visible={kickModal}
+                    onClose={() => {
+                        setShowModal(false);
+                        setKickModal(false);
+                    }}
+                    onConfirm={(message: string) => {
+                        setKickModal(false);
+                        setShowModal(false);
+                        
+                        if (!message || message === '') {
+                            return
+                        }
+
+                        fetchNui('kick', {
+                            message: message,
+                            id: data.id
+                        })
+                    }}
+                />
+                <BanModal 
+                    visible={banModal}
+                    onClose={() => {
+                        setShowModal(false);
+                        setBanModal(false);
+                    }}
+                    onConfirm={(message: string) => {
+                        setBanModal(false);
+                        setShowModal(false);
+                        
+                        if (!message || message === '') {
+                            return
+                        }
+
+                        fetchNui('ban', {
                             message: message,
                             id: data.id
                         })
