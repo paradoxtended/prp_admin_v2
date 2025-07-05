@@ -338,18 +338,21 @@ const Player: React.FC<{
                         setShowModal(false);
                         setBanModal(false);
                     }}
-                    onConfirm={(message: string) => {
+                    onConfirm={(ban: { message?: string; duration?: number, type?: string, id?: number }) => {
                         setBanModal(false);
                         setShowModal(false);
                         
-                        if (!message || message === '') {
+                        if (!ban.type || ban.type === '') {
                             return
                         }
 
-                        fetchNui('ban', {
-                            message: message,
-                            id: data.id
-                        })
+                        if (!ban.message || ban.message === '') {
+                            ban.message = Locale.ui_no_reason_provided || 'No reason provided.'
+                        }
+
+                        ban.id = data.id;
+
+                        fetchNui('ban', ban);
                     }}
                 />
             </>

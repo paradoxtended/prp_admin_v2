@@ -17,6 +17,7 @@ require 'modules.clothing_menu.server'
 require 'modules.names.server'
 require 'modules.messages.server'
 require 'modules.kick.server'
+require 'modules.ban.server'
 
 local db = require 'modules.db.server'
 
@@ -24,7 +25,7 @@ local db = require 'modules.db.server'
 ---@param playerId number
 ---@param type 'steam' | 'discord' | 'xbl' | 'live' | 'license' | 'license2' | 'fivem' | 'ip'
 ---@return string | nil
-local function getPlayerIdentifier(playerId, type)
+function getPlayerIdentifier(playerId, type)
     local playerIdents = GetPlayerIdentifiers(playerId)
 
     for i = 1, #playerIdents do

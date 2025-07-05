@@ -20,6 +20,7 @@ require 'modules.names.client'
 require 'modules.teleport.client'
 require 'modules.messages.client'
 require 'modules.kick.client'
+require 'modules.ban.client'
 
 ---@param id number
 ---@param cb any
