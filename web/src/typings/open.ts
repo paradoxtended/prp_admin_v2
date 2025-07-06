@@ -1,7 +1,7 @@
 export interface Player {
     charName: string; 
     id: number; 
-    steam: string | number; 
+    steam: string; 
     accName: string; 
     admin?: boolean;
     online: boolean;

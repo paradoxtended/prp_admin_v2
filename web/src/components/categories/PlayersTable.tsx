@@ -71,7 +71,7 @@ const PlayersTable: React.FC<{
                         </td>
                         <td className="px-3 py-2 text-sm text-white">
                             <div className="flex items-center justify-between">
-                                <p>{ply.steam}</p>
+                                <p>{ply.steam.includes(':') ? ply.steam.split(':')[1] : ply.steam}</p>
                                 <i className="fa-regular fa-copy text-neutral-600 cursor-pointer hover:text-neutral-500 duration-200"
                                 onClick={() => setClipboard(ply.steam.toString())}></i>
                             </div>

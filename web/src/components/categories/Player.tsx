@@ -82,7 +82,10 @@ const Player: React.FC<{
             ],
             [Locale.ui_moderation || 'Moderation'] : [
                 { name: 'kick', label: Locale.ui_kick || 'Kick', color: '#eab308', modal: setKickModal },
-                { name: 'ban', label: Locale.ui_ban || 'Ban', color: '#ef4444', modal: setBanModal }
+                { name: 'ban', label: Locale.ui_ban || 'Ban', color: '#ef4444', modal: setBanModal },
+                ...(player?.banned ? [
+                    { name: 'unban', label: Locale.ui_unban || 'Unban', color: '#075985' }
+                ] : [])
             ]
         }
     }
@@ -92,7 +95,7 @@ const Player: React.FC<{
 
         if (isEnvBrowser()) {
             setPlayer({
-                banned: false,
+                banned: true,
                 identifiers: {
                     steam: '154848647',
                     license: '4dasda46845165132as1564',

@@ -17,11 +17,11 @@ debugData<OpenData>([
     data: {
       players: {
         players: [
-          { charName: 'Andrew Pierce', id: 15, steam: 458745156, accName: 'Ravage', admin: true, online: true, stateId: 3 },
-          { charName: 'Sarah Brassi', id: 11, steam: 154876512, accName: 'unknown', admin: true, online: false, stateId: 2 },
-          { charName: 'Mathew Cavazza', id: 8, steam: 124568725, accName: 'mathew', online: true, stateId: 5 },
-          { charName: 'Antonny Goodman', id: 25, steam: 123783242, accName: 'Mrdudecall', online: true, stateId: 1 },
-          { charName: 'Jesse Pinkman', id: 35, steam: 101204538, accName: 'iamboss', online: true, stateId: 4 },
+          { charName: 'Andrew Pierce', id: 15, steam: 'char1:156465484132054asdaw8d4as564da', accName: 'Ravage', admin: true, online: true, stateId: 3 },
+          { charName: 'Sarah Brassi', id: 11, steam: 'char1:asdas4da4s86d4asd54as6d84a6s8d', accName: 'unknown', admin: true, online: false, stateId: 2 },
+          { charName: 'Mathew Cavazza', id: 8, steam: 'char1:asdasd456165123181dasdasdasdad', accName: 'mathew', online: true, stateId: 5 },
+          { charName: 'Antonny Goodman', id: 25, steam: 'char1:d846adw68a4s5d1a6w54d68aw4da65', accName: 'Mrdudecall', online: true, stateId: 1 },
+          { charName: 'Jesse Pinkman', id: 35, steam: 'char1:dasda4d648ad68a4d56as1d4a684da', accName: 'iamboss', online: true, stateId: 4 },
         ],
         jobs: [
           { label: 'Medical', amount: 2, color: '#f87171' },
