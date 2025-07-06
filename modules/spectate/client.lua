@@ -12,7 +12,11 @@ function spectatePlayer(targetId, cb)
 
     if not isAdmin then return end
 
-    local target = GetPlayerPed(GetPlayerFromServerId(targetId))
+    local player = GetPlayerFromServerId(targetId)
+
+    if not player or player == -1 then return end
+
+    local target = GetPlayerPed(player)
     lastCoords = GetEntityCoords(cache.ped)
     local coords = GetEntityCoords(target)
 

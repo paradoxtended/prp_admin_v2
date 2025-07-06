@@ -74,18 +74,18 @@ lib.addCommand(config.adminPanel.command, {
     ---@type PlayerData[], JobsData[]?
     local players, jobs = {}, {}
 
-    for _, playerId in ipairs(GetPlayers()) do
-        local player = Framework.getPlayerFromId(playerId)
+    for _, data in ipairs(db.getAllPlayers()) do
+        local player = Framework.getPlayerFromIdentifier(data.steam)
 
-        if player then
-            table.insert(players, {
-                charName = player:getFirstName() .. ' ' .. player:getLastName(),
-                id = playerId,
-                steam = getPlayerIdentifier(playerId, 'steam') or getPlayerIdentifier(playerId, 'fivem'),
-                accName = GetPlayerName(playerId),
-                admin = player:hasOneOfGroups(config.adminPanel.allowedGroups)
-            })
-        end
+        table.insert(players, {
+            charName = data.characterName,
+            id = player and player.source or nil,
+            steam = data.steam,
+            accName = player and GetPlayerName(player.source) or locale('unknown_acc_name'),
+            admin = data.admin,
+            online = player and true or false,
+            stateId = data.stateId
+        })
     end
 
     if config.adminPanel.dashboardJobs then
@@ -96,7 +96,7 @@ lib.addCommand(config.adminPanel.command, {
 end)
 
 ---@param source number
----@param playerId number
+---@param playerId number | string
 ---@return FetchedPlayer?
 lib.callback.register('prp_admin_v2:getPlayerData', function(source, playerId)
     local player = Framework.getPlayerFromId(source)
@@ -105,22 +105,42 @@ lib.callback.register('prp_admin_v2:getPlayerData', function(source, playerId)
 
     local target = Framework.getPlayerFromId(playerId)
 
-    if not target then return end
-    local coords = GetEntityCoords(GetPlayerPed(playerId))
+    if target then
+        local coords = GetEntityCoords(GetPlayerPed(playerId))
 
-    ---@type FetchedPlayer
-    return {
-        banned = false, -- todo import banning system and check if player is banned
-        identifiers = {
-            steam = getPlayerIdentifier(playerId, 'steam') or nil,
-            license = getPlayerIdentifier(playerId, 'license') or nil,
-            discord = getPlayerIdentifier(playerId, 'discord') or nil
-        },
-        coords = { x = coords.x, y = coords.y, z = coords.z },
-        account = { bank = target:getAccountMoney('bank'), cash = target:getAccountMoney('money') },
-        jobs = { name = select(1, target:getJob()), label = select(2, target:getJob()), grade = select(2, target:getJobGrade()) },
-        ped = GetEntityModel(GetPlayerPed(playerId))
-    }
+        ---@type FetchedPlayer
+        return {
+            banned = db.loadBan(target:getIdentifier():match(':(.+)')),
+            identifiers = {
+                steam = getPlayerIdentifier(playerId, 'steam') or nil,
+                license = getPlayerIdentifier(playerId, 'license') or nil,
+                discord = getPlayerIdentifier(playerId, 'discord') or nil
+            },
+            coords = { x = coords.x, y = coords.y, z = coords.z },
+            account = { bank = target:getAccountMoney('bank'), cash = target:getAccountMoney('money') },
+            jobs = { name = select(1, target:getJob()), label = select(2, target:getJob()), grade = select(2, target:getJobGrade()) },
+            ped = GetEntityModel(GetPlayerPed(playerId))
+        }
+    else
+        local data = db.loadPlayer(playerId)
+        local identifier = playerId
+
+        ---@type FetchedPlayer
+        return {
+            banned = db.loadBan(identifier:match(':(.+)') or identifier),
+            identifiers = {
+                license = identifier:match(':(.+)') or identifier
+            },
+            coords = { x = json.decode(data.position).x, y = json.decode(data.position).y, z = json.decode(data.position).z },
+            account = Framework.name == 'es_extended' and { bank = json.decode(data.accounts).bank, cash = json.decode(data.accounts).money } 
+                    or { bank = json.decode(data.accounts).bank, cash = json.decode(data.accounts).cash },
+            jobs = Framework.name == 'es_extended' and { name = data.job, label = data.job:gsub('^%l', string.upper), grade = data.job_grade }
+                    or { name = json.decode(data.job).name, label = json.decode(data.job).label, grade = json.decode(data.job).grade.name },
+            ped = PedModels[identifier] and GetEntityModel(PedModels[identifier])
+                    or Framework.name == 'es_extended' and (data.sex == 'm' and 'mp_m_freemode_01' or 'mp_f_freemode_01')
+                                                       or (json.decode(data.charinfo).gender == 0 and 'mp_m_freemode_01' or 'mp_f_freemode_01') 
+        }
+    end
 end)
 
 -- Database

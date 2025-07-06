@@ -4,6 +4,9 @@ function teleportToPlayer(targetId, cb)
     if cb then cb(1) end
 
     local target = GetPlayerFromServerId(targetId)
+
+    if not target or target == -1 then return end
+
     local ped = GetPlayerPed(target)
 
     if not ped then return end
@@ -29,6 +32,9 @@ function teleportPlayerToMe(targetId, cb)
     if cb then cb(1) end
 
     local target = GetPlayerFromServerId(targetId)
+
+    if not target or target == -1 then return end
+
     local ped = GetPlayerPed(target)
 
     if not ped then return end
@@ -49,6 +55,9 @@ function teleportToPlayerCar(targetId, cb)
     if cb then cb(1) end
 
     local target = GetPlayerFromServerId(targetId)
+    
+    if not target or target == -1 then return end
+
     local ped = GetPlayerPed(target)
 
     if not ped then return end

@@ -109,7 +109,7 @@ const Player: React.FC<{
         }
 
         try {
-            const response: PlayerProps = await fetchNui('getPlayerData', id);
+            const response: PlayerProps = await fetchNui('getPlayerData', id || data.steam);
             if (!response) return;
 
             setPlayer(response);
@@ -139,7 +139,7 @@ const Player: React.FC<{
     const changeAccountAmount = (type?: 'bank' | 'money', action?: 'add' | 'remove', amount?: number) => {
         if (amount && amount !== 0) {
             fetchNui('change_account_status', {
-                target: data.id,
+                target: data.steam,
                 type: account.type,
                 action: account.action,
                 amount: amount
@@ -158,7 +158,7 @@ const Player: React.FC<{
     const changeJob = (name?: string, grade?: number, remove?: boolean) => {
         if (name && grade !== null || grade !== undefined) {
             fetchNui('change_job', {
-                target: data.id,
+                target: data.steam,
                 name: name,
                 grade: grade,
             })
@@ -168,7 +168,7 @@ const Player: React.FC<{
             return
         } else if (remove) {
             fetchNui('change_job', {
-                target: data.id,
+                target: data.steam,
                 name: 'unemployed',
                 grade: 0,
             })
@@ -187,10 +187,10 @@ const Player: React.FC<{
             <>
                 <div className='h-full flex flex-col gap-3 overflow-auto mr-5 pb-1'>
                     <div className="flex text-white items-center justify-between pr-4">
-                        <p className="font-bold text-3xl">{data.charName} ({data.id})</p>
+                        <p className="font-bold text-3xl">{data.charName} ({data.stateId})</p>
                         <div className="flex items-center gap-2">
                             <p className={`text-sm border rounded px-2 py-1
-                                ${player ? 'bg-lime-500/20 border-lime-500' : 'bg-red-500/20 border-red-600'}`}>{player ? 'Online' : 'Offline'}
+                                ${data.online ? 'bg-lime-500/20 border-lime-500' : 'bg-red-500/20 border-red-600'}`}>{data.online ? 'Online' : 'Offline'}
                             </p>
                             <button onClick={async () => fetchPlayer(data.id, true)}
                                 className="flex items-center gap-2 text-sm border rounded px-2 py-1 border-neutral-600 bg-neutral-900 hover:bg-neutral-800 duration-200 cursor-pointer">
@@ -275,7 +275,7 @@ const Player: React.FC<{
                         setNamesModal(false);
                         setShowModal(false);
                     }}
-                    onConfirm={(names: { firstname?: string, lastname?: string, id?: number }) => {
+                    onConfirm={(names: { firstname?: string, lastname?: string, id?: string | number | undefined }) => {
                         setNamesModal(false);
                         setShowModal(false);
 
@@ -283,7 +283,7 @@ const Player: React.FC<{
                             return
                         }
 
-                        names.id = data.id
+                        names.id = data.steam;
                         
                         fetchNui('update_character_names', names);
                         onNameUpdate?.(`${names.firstname.charAt(0).toUpperCase() + names.firstname.slice(1)} ${names.lastname.charAt(0).toUpperCase() + names.lastname.slice(1)}`);
@@ -343,7 +343,7 @@ const Player: React.FC<{
                         setShowModal(false);
                         setBanModal(false);
                     }}
-                    onConfirm={(ban: { message?: string; duration?: number, type?: string, id?: number }) => {
+                    onConfirm={(ban: { message?: string; duration?: number, type?: string, id?: number | undefined | string }) => {
                         setBanModal(false);
                         setShowModal(false);
                         
@@ -355,7 +355,7 @@ const Player: React.FC<{
                             ban.message = Locale.ui_no_reason_provided || 'No reason provided.'
                         }
 
-                        ban.id = data.id;
+                        ban.id = data.steam;
 
                         fetchNui('ban', ban);
 

@@ -3,7 +3,9 @@ export interface Player {
     id: number; 
     steam: string | number; 
     accName: string; 
-    admin?: boolean
+    admin?: boolean;
+    online: boolean;
+    stateId: number;
 }
 
 interface PlayersProps {

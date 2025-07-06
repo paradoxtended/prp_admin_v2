@@ -3,6 +3,9 @@ RegisterNuiCallback('freeze', function(targetId, cb)
     cb(1)
 
     local target = GetPlayerFromServerId(targetId)
+
+    if not target or target == -1 then return end
+
     local targetPed = GetPlayerPed(target)
 
     if not targetPed then return end

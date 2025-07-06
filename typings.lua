@@ -4,6 +4,8 @@
 ---@field steam string | number;
 ---@field accName string;
 ---@field admin boolean;
+---@field online boolean;
+---@field stateId number;
 
 ---@class JobsData
 ---@field label string;
@@ -17,3 +19,9 @@
 ---@field account { bank: number, cash: number };
 ---@field jobs { name: string, label: string, grade: number | string };
 ---@field ped number | string;
+
+---@class DatabasePlayerData
+---@field characterName string;
+---@field steam string;
+---@field admin boolean;
+---@field stateId number;

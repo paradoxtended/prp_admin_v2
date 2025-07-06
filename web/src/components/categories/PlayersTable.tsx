@@ -2,7 +2,7 @@ import type { Player } from "../../typings/open";
 import { setClipboard } from "../../utils/setClipboard";
 import { Locale } from "../store/locale";
 
-type SortField = 'charName' | 'id' | 'steam' | 'accName';
+type SortField = 'charName' | 'stateId' | 'steam' | 'accName';
 
 const PlayersTable: React.FC<{
     data: Player[];
@@ -35,7 +35,7 @@ const PlayersTable: React.FC<{
                     <th className="px-3 py-2">
                         <div className="flex items-center gap-5">
                             <p>{Locale.ui_stateId || 'State ID'}</p>
-                            {renderSortIcon('id')}
+                            {renderSortIcon('stateId')}
                         </div>
                     </th>
                     <th className="px-3 py-2">{Locale.ui_steam || 'Steam'}</th>
@@ -64,9 +64,9 @@ const PlayersTable: React.FC<{
                         </td>
                         <td className="px-3 py-2 text-sm text-white">
                             <div className="flex items-center justify-between">
-                                <p>{ply.id}</p>
+                                <p>{ply.stateId}</p>
                                 <i className="fa-regular fa-copy text-neutral-600 cursor-pointer hover:text-neutral-500 duration-200"
-                                onClick={() => setClipboard(ply.id.toString())}></i>
+                                onClick={() => setClipboard(ply.stateId.toString())}></i>
                             </div>
                         </td>
                         <td className="px-3 py-2 text-sm text-white">

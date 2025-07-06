@@ -17,11 +17,11 @@ debugData<OpenData>([
     data: {
       players: {
         players: [
-          { charName: 'Andrew Pierce', id: 15, steam: 458745156, accName: 'Ravage', admin: true },
-          { charName: 'Sarah Brassi', id: 11, steam: 154876512, accName: 'mrs.sarahh', admin: true },
-          { charName: 'Mathew Cavazza', id: 8, steam: 124568725, accName: 'mathew' },
-          { charName: 'Antonny Goodman', id: 25, steam: 123783242, accName: 'Mrdudecall' },
-          { charName: 'Jesse Pinkman', id: 35, steam: 101204538, accName: 'iamboss' },
+          { charName: 'Andrew Pierce', id: 15, steam: 458745156, accName: 'Ravage', admin: true, online: true, stateId: 3 },
+          { charName: 'Sarah Brassi', id: 11, steam: 154876512, accName: 'unknown', admin: true, online: false, stateId: 2 },
+          { charName: 'Mathew Cavazza', id: 8, steam: 124568725, accName: 'mathew', online: true, stateId: 5 },
+          { charName: 'Antonny Goodman', id: 25, steam: 123783242, accName: 'Mrdudecall', online: true, stateId: 1 },
+          { charName: 'Jesse Pinkman', id: 35, steam: 101204538, accName: 'iamboss', online: true, stateId: 4 },
         ],
         jobs: [
           { label: 'Medical', amount: 2, color: '#f87171' },

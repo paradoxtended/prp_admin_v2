@@ -34,7 +34,8 @@ local function getExpireDate(type, duration)
 end
 
 ---@param source number
----@param data { message?: string, duration: number, type: 'minutes' | 'hours' | 'days' | 'perm', id: number }
+---@param data { message?: string, duration: number, type: 'minutes' | 'hours' | 'days' | 'perm', id: string }
+---@return boolean?
 function banPlayer(source, data)
     if not data.message then
         data.message = locale('no_reason_provided')
@@ -43,31 +44,32 @@ function banPlayer(source, data)
     local admin = Framework.getPlayerFromId(source)
     if not admin or not admin:hasOneOfGroups(config.adminPanel.allowedGroups) then return end
 
-    local target = Framework.getPlayerFromId(data.id)
-    if not target then return end
-
-    local license = getPlayerIdentifier(data.id, 'license')
+    local license = data.id:match(':(.+)') or data.id
     local expire = getExpireDate(data.type, data.duration)
     local bannedBy = GetPlayerName(source)
     local reason = data.message
 
     db.banPlayer(license, expire, bannedBy, reason)
 
-    DropPlayer(data.id, locale('ban_message', reason, expire))
+    return true
 end
 
 ---@param source number
----@param data { message: string, duration: number, type: 'minutes' | 'hours' | 'days' | 'perm', id: number }
+---@param data { message: string, duration: number, type: 'minutes' | 'hours' | 'days' | 'perm', id: string }
 lib.callback.register('prp_admin_v2:ban', function(source, data)
     local admin = Framework.getPlayerFromId(source)
     
     if not admin or not admin:hasOneOfGroups(config.adminPanel.allowedGroups) then return end
 
-    local target = Framework.getPlayerFromId(data.id)
+    local success = banPlayer(source, data)
 
-    if not target then return end
+    if not success then return end
 
-    banPlayer(source, data)
+    local target = Framework.getPlayerFromIdentifier(data.id)
+
+    if target then
+        DropPlayer(target.source, locale('ban_message', reason, expire))
+    end
 
     return true
 end)

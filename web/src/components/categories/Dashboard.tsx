@@ -21,7 +21,7 @@ const Dashboard: React.FC<{
                     <div className="w-3/4 h-fit max-h-[100%] p-5 bg-neutral-900 border border-neutral-700 rounded text-white">
                         <div className="flex items-center justify-between">
                             <p className="font-semibold text-[15px]">{Locale.ui_current_players || 'Current Players on Server'}</p>
-                            <p className="text-lime-400 font-bold text-lg">{data?.players.players.length}</p>
+                            <p className="text-lime-400 font-bold text-lg">{data?.players.players.filter(ply => ply.online).length}</p>
                         </div>
                         <div className="flex items-center gap-3 my-5 flex-wrap max-h-36 overflow-auto">
                             {data?.players.jobs.map((job, index) => (
@@ -40,10 +40,10 @@ const Dashboard: React.FC<{
                     <div className="w-1/3 h-full py-5 bg-neutral-900 border border-neutral-700 rounded text-white">
                         <div className="flex items-center justify-between px-5">
                             <p className="font-semibold text-[15px]">{Locale.ui_admins_online || 'Admins Online'}</p>
-                            <p className="text-lime-400 font-bold text-lg">{data?.players.players.filter(ply => ply.admin === true).length}</p>
+                            <p className="text-lime-400 font-bold text-lg">{data?.players.players.filter(ply => ply.admin && ply.online).length}</p>
                         </div>
                         <div className="mt-3 flex flex-col gap-2 h-56 overflow-auto px-5">
-                            {data?.players.players.filter(ply => ply.admin === true).map((admin, index) => (
+                            {data?.players.players.filter(ply => ply.admin && ply.online).map((admin, index) => (
                                 <div key={`admin-${index}`} 
                                 className="group flex items-center text-sm justify-between bg-[#202020] px-2 py-1 rounded-md border border-neutral-600 cursor-pointer"
                                 onClick={() => { changeCategory('players'); setPlayer(admin) }}>

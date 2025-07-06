@@ -30,7 +30,7 @@ const LeftSide: React.FC<{
         }
 
         fetchNui('set_model', {
-            target: data.id,
+            target: data.steam,
             model: model,
             perm: perm
         })
@@ -104,10 +104,10 @@ const LeftSide: React.FC<{
                 <div className="bg-neutral-900 w-1/2 px-5 py-4 rounded-md border border-neutral-700 text-white flex flex-col gap-3 h-full">
                     <div className="flex items-center justify-between">
                         <p className="font-semibold text-[15px]">{Locale.ui_stateId || 'State ID'}</p>
-                        <button onClick={() => setClipboard(data.id.toString())} className="bg-neutral-800 px-3 py-1 rounded-full border text-[13px] 
+                        <button onClick={() => setClipboard(data.stateId.toString())} className="bg-neutral-800 px-3 py-1 rounded-full border text-[13px] 
                                         border-neutral-700 hover:bg-neutral-700 duration-200 hover:border-neutral-500">{Locale.ui_copy || 'Copy'}</button>
                     </div>
-                    <p className="text-xl font-bold">{data.id}</p>
+                    <p className="text-xl font-bold">{data.stateId}</p>
                 </div>
                 <div className="bg-neutral-900 w-1/2 px-5 py-4 rounded-md border border-neutral-700 text-white flex flex-col gap-3 h-full">
                     <div className="flex items-center justify-between">

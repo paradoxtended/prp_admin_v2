@@ -22,7 +22,7 @@ require 'modules.messages.client'
 require 'modules.kick.client'
 require 'modules.ban.client'
 
----@param id number
+---@param id? number
 ---@param cb any
 RegisterNuiCallback('getPlayerData', function(id, cb)
     local response = lib.callback.await('prp_admin_v2:getPlayerData', false, id)

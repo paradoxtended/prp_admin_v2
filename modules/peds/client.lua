@@ -1,6 +1,6 @@
 RegisterNetEvent('prp_admin_v2:reset_model', function()
     TriggerEvent('skinchanger:getSkin', function(skin)
-        local model = skin.sex == 0 and 'mp_m_freemode_01' or 'mp_f_reemode_01'
+        local model = skin.sex == 0 and 'mp_m_freemode_01' or 'mp_f_freemode_01'
 
         lib.requestModel(model)
 
