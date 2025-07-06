@@ -33,12 +33,13 @@ export interface PlayerActionsProps {
 }
 
 const Player: React.FC<{
+    currentPlayer: (player: PlayerData | null) => void;
     data: PlayerData;
     peds: any;
     handleClose: () => void;
     onNameUpdate?: (name: string) => void;
     setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ data, peds, handleClose, onNameUpdate, setShowModal }) => {
+}> = ({ currentPlayer, data, peds, handleClose, onNameUpdate, setShowModal }) => {
     const [visible, setVisible] = useState<boolean>(false);
     const [player, setPlayer] = useState<PlayerProps | null>(null);
 
@@ -81,7 +82,7 @@ const Player: React.FC<{
             ],
             [Locale.ui_moderation || 'Moderation'] : [
                 { name: 'kick', label: Locale.ui_kick || 'Kick', color: '#eab308', modal: setKickModal },
-                { name: 'ban', label: Locale.ui_ban || 'Ban', color: '#ef4444', modal: setBanModal },
+                { name: 'ban', label: Locale.ui_ban || 'Ban', color: '#ef4444', modal: setBanModal }
             ]
         }
     }
@@ -329,7 +330,11 @@ const Player: React.FC<{
                         fetchNui('kick', {
                             message: message,
                             id: data.id
-                        })
+                        });
+
+                        //Reset current player
+                        currentPlayer(null);
+                        handleClose();
                     }}
                 />
                 <BanModal 
@@ -353,6 +358,10 @@ const Player: React.FC<{
                         ban.id = data.id;
 
                         fetchNui('ban', ban);
+
+                        //Reset current player
+                        currentPlayer(null);
+                        handleClose();
                     }}
                 />
             </>
