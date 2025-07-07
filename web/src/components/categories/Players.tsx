@@ -104,7 +104,7 @@ const Players: React.FC<{
                     <input type="text"
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder={Locale.ui_search || 'Search...'}
-                    className="bg-neutral-900 border border-neutral-700 focus:outline-none rounded text-[13px] px-3 py-1.5 w-full placeholder:text-neutral-300
+                    className="bg-neutral-900 border border-neutral-700 focus:outline-none rounded-lg text-[13px] px-3 py-1.5 w-full placeholder:text-neutral-300
                     focus:outline focus:outline-lime-600 focus:outline-1"/>
                     <i className="fa-solid fa-magnifying-glass absolute top-1/2 right-3 -translate-y-1/2 pointer-events-none scale-90"></i>
                 </div>

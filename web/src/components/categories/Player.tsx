@@ -23,6 +23,10 @@ export interface PlayerProps {
     account: { bank: number, cash: number };
     jobs: { name: string; label: string; grade: string | number };
     ped: number | string;
+    vehicles: {
+        current?: { model: string; plate: string },
+        owned?: { model: string; plate: string, active?: boolean }[]
+    }
 }
 
 export interface PlayerActionsProps { 
@@ -106,7 +110,16 @@ const Player: React.FC<{
                 coords: { x: 841.6, y: 3785.3, z: 458.2 },
                 account: { bank: 750, cash: 11548 },
                 jobs: { name: 'government', label: 'Government', grade: 3 },
-                ped: -509558803
+                ped: -509558803,
+                vehicles: {
+                    current: { model: 'swift', plate: '00BUKO37' },
+                    owned: [
+                        { model: 'Sandking XL', plate: 'O2BL92SX', active: true },
+                        { model: 'Adder', plate: '5412TILL' },
+                        { model: 'T20', plate: 'TL91ULLU' },
+                        { model: 'BMW M3', plate: '125ASD42', active: true }
+                    ]
+                }
             });
 
             setTimeout(() => setVisible(true), 500);
@@ -193,12 +206,12 @@ const Player: React.FC<{
                 <div className='h-full flex flex-col gap-3 overflow-auto mr-5 pb-1'>
                     <div className="flex text-white items-center justify-between pr-4">
                         <p className="font-bold text-4xl">{data.charName} ({data.stateId})</p>
-                        <div className="flex items-center gap-2">
-                            <p className={`text-sm border rounded px-2 py-1
+                        <div className="flex items-center gap-2 text-[13px]">
+                            <p className={`border rounded px-3 py-1.5
                                 ${data.online ? 'bg-lime-500/20 border-lime-500' : 'bg-red-500/20 border-red-600'}`}>{data.online ? 'Online' : 'Offline'}
                             </p>
                             <button onClick={async () => fetchPlayer(data.id, true)}
-                                className="flex items-center gap-2 text-sm border rounded px-2 py-1 border-neutral-600 bg-neutral-900 hover:bg-neutral-800 duration-200 cursor-pointer">
+                                className="flex items-center gap-2 border rounded px-3 py-1.5 border-neutral-600 bg-neutral-900 hover:bg-neutral-800 duration-200 cursor-pointer">
                                 <i className="fa-solid fa-arrows-rotate"></i>
                                 {Locale.ui_refresh || 'Refresh'}
                             </button>

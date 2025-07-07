@@ -9,8 +9,8 @@ const Developer: React.FC<{
 }> = ({ actions }) => {
     const [visible, setVisible] = useState<boolean>(false);
     const [action, setAction] = useState<ActionsProps>({
-        noclip: actions.noclip,
-        vanish: actions.vanish
+        noclip: actions?.noclip,
+        vanish: actions?.vanish
     })
 
     useEffect(() => {

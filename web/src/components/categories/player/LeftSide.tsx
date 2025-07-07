@@ -18,6 +18,7 @@ const LeftSide: React.FC<{
     }
 }> = ({ data, player, setPlayer, changeAccountAmount, changeJob, fetchPlayer, modals }) => {
     const [imgError, setImgError] = useState(false);
+    const [vehicleQuery, setVehicleQuery] = useState('');
 
     const changePedModel = (model: string | number | undefined, reset?: boolean, perm?: boolean) => {
         if (reset) {
@@ -176,6 +177,65 @@ const LeftSide: React.FC<{
                     </div>
                 </div>
             </div>
+            {player?.vehicles.current && (
+                <div className="bg-neutral-900 p-5 rounded-md border border-neutral-700 text-white flex flex-col gap-3">
+                    <p className="text-[15px] font-semibold">{Locale.ui_current_player_vehicle || 'Current Player Vehicle'}</p>
+                    <div className="text-xs flex items-center gap-5">
+                        <div className="flex flex-col gap-2">
+                            <p className="text-neutral-600">{Locale.ui_model || 'MODEL'}</p>
+                            <p className="text-[13px]">{player.vehicles.current.model}</p>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <p className="text-neutral-600 flex items-center gap-2">{Locale.ui_plate || 'PLATE'} <i className="fa-regular fa-copy text-[13px]
+                            cursor-pointer hover:text-neutral-500 duration-200"
+                            onClick={() => setClipboard(player.vehicles.current?.plate || '')}></i></p>
+                            <p className="text-[13px]">{player.vehicles.current.plate}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {player?.vehicles.owned && (
+                <div className="bg-neutral-900 p-5 pr-0 rounded-md border border-neutral-700 text-white flex flex-col gap-3">
+                    <p className="text-[15px] font-semibold">{Locale.ui_owned_vehicles || 'Owned Vehicles'}</p>
+                    <div className="relative mt-1 mr-5">
+                        <input type="text"
+                            onChange={(e) => setVehicleQuery(e.target.value)}
+                            placeholder={Locale.ui_search_car || 'Search for a car...'}
+                            className="bg-neutral-800 border border-neutral-700 rounded px-3 py-1.5 text-[13px] placeholder:text-neutral-500 w-full
+                            focus:outline focus:outline-1 focus:outline-offset-1 focus:outline-lime-600"
+                        />
+                        <i className="fa-solid fa-magnifying-glass absolute right-2 top-1/2 -translate-y-1/2 text-neutral-300 pointer-events-none"></i>
+                    </div>
+                    <div className="flex flex-col gap-2 mr-2 max-h-52 overflow-auto">
+                        {player.vehicles.owned.filter(veh => 
+                            veh.model.toLowerCase().includes(vehicleQuery.toLowerCase()) ||
+                            veh.plate.toLowerCase().includes(vehicleQuery.toLowerCase())
+                        ).map((vehicle, index) => (
+                            <div key={`vehicle-${index}`}
+                            className="bg-[#141414] p-5 rounded-md border border-neutral-700 mr-2.5 flex flex-col gap-3">
+                                <div className="text-[11px] flex items-center gap-5">
+                                    <div className="flex flex-col gap-2">
+                                        <p className="text-neutral-600">{Locale.ui_model || 'MODEL'}</p>
+                                        <p className="text-[13px]">{vehicle.model}</p>
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <p className="text-neutral-600">{Locale.ui_status || 'STATUS'}</p>
+                                        <p className="text-[13px]">{vehicle.active ? (Locale.ui_vehicle_out || 'Out garage') : (Locale.ui_vehicle_in || 'In garage')}</p>
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <p className="text-neutral-600 flex items-center gap-2">{Locale.ui_plate || 'PLATE'} <i className="fa-regular fa-copy text-[13px]
+                                        cursor-pointer hover:text-neutral-500 duration-200"
+                                        onClick={() => setClipboard(vehicle.plate || '')}></i></p>
+                                        <p className="text-[13px]">{vehicle.plate}</p>
+                                    </div>
+                                </div>
+                                <button className="w-fit text-[13px] bg-neutral-800 px-10 py-1 rounded-full border border-neutral-700
+                                hover:bg-neutral-700 hover:border-neutral-500 duration-200">{Locale.ui_remove || 'Remove'}</button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
             <div className="bg-neutral-900 px-5 py-4 rounded-md border border-neutral-700 text-white flex flex-col gap-3">
                 <div className="flex items-center justify-between">
                     <p className="font-semibold text-[15px]">{Locale.ui_current_job || 'Current Job'}</p>
