@@ -122,6 +122,8 @@ const Players: React.FC<{
                             setSortDirection('asc');
                         }
                     }}
+                    handleClose={handleClose}
+                    setShowModal={setShowModal}
                     setPlayer={(data: PlayerData) => setPlayer(data)}
                 />
                 

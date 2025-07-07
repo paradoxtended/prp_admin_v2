@@ -14,6 +14,7 @@ import NameModal from "./ui/NameModal";
 import MessageModal from "./ui/MessageModal";
 import KickModal from "./ui/KickModal";
 import BanModal from "./ui/BanModal";
+import UnbanModal from "./ui/UnbanModal";
 
 export interface PlayerProps {
     banned: boolean;
@@ -55,6 +56,7 @@ const Player: React.FC<{
     const [meMessage, setMeMessage] = useState<boolean>(false);
     const [kickModal, setKickModal] = useState<boolean>(false);
     const [banModal, setBanModal] = useState<boolean>(false);
+    const [unbanModal, setUnbanModal] = useState<boolean>(false);
 
     const playerActions = (): Record<string, PlayerActionsProps[]> => {
         return {
@@ -84,7 +86,7 @@ const Player: React.FC<{
                 { name: 'kick', label: Locale.ui_kick || 'Kick', color: '#eab308', modal: setKickModal },
                 { name: 'ban', label: Locale.ui_ban || 'Ban', color: '#ef4444', modal: setBanModal },
                 ...(player?.banned ? [
-                    { name: 'unban', label: Locale.ui_unban || 'Unban', color: '#075985' }
+                    { name: 'unban', label: Locale.ui_unban || 'Unban', color: '#075985', modal: setUnbanModal }
                 ] : [])
             ]
         }
@@ -365,6 +367,18 @@ const Player: React.FC<{
                         //Reset current player
                         currentPlayer(null);
                         handleClose();
+                    }}
+                />
+                <UnbanModal
+                    visible={unbanModal}
+                    onClose={() => {
+                        setShowModal(false);
+                        setUnbanModal(false);
+                    }}
+                    onConfirm={() => {
+                        fetchNui('unban', data.steam);
+                        setShowModal(false);
+                        setUnbanModal(false);
                     }}
                 />
             </>

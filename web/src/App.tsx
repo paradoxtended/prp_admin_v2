@@ -38,7 +38,8 @@ const App: React.FC = () => {
   const [data, setData] = useState<OpenData>();
   const [categories, setCategories] = useState<CategoryProps[]>([
     { name: 'dashboard', icon: 'fa-solid fa-house', active: true },
-    { name: 'players', icon: 'fa-solid fa-users' }
+    { name: 'players', icon: 'fa-solid fa-users' },
+    { name: 'developer', icon: 'fa-solid fa-terminal' }
   ]);
   const currentCategory = categories.find(c => c.active)?.name || 'dashboard';
   const [player, setPlayer] = useState<Player | null>(null);

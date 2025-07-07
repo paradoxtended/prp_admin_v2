@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Locale } from "../../store/locale";
 import Fade from "../../utils/transitions/Fade";
 
-const MessageModal: React.FC<{
+const BanModal: React.FC<{
     visible: boolean;
     onClose: () => void;
     onConfirm: (data: { message?: string; duration?: number, type?: string }) => void;
@@ -80,4 +80,4 @@ const MessageModal: React.FC<{
     )
 };
 
-export default MessageModal;
+export default BanModal;
