@@ -13,6 +13,12 @@ interface PlayersProps {
     jobs: { label: string; amount: number; color: string; }[];
 }
 
+export interface ActionsProps {
+    noclip: boolean;
+    vanish: boolean;
+}
+
 export interface OpenData {
-    players: PlayersProps
+    players: PlayersProps,
+    actions?: ActionsProps
 }

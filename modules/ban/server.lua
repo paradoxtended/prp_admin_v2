@@ -55,6 +55,19 @@ function banPlayer(source, data)
 end
 
 ---@param source number
+---@param identifier string
+---@return boolean?
+function unbanPlayer(source, identifier)
+    local admin = Framework.getPlayerFromId(source)
+    if not admin or not admin:hasOneOfGroups(config.adminPanel.allowedGroups) then return end
+
+    local license = identifier:match(':(.+)') or identifier
+    db.deleteBan(license)
+
+    return true
+end
+
+---@param source number
 ---@param data { message: string, duration: number, type: 'minutes' | 'hours' | 'days' | 'perm', id: string }
 lib.callback.register('prp_admin_v2:ban', function(source, data)
     local admin = Framework.getPlayerFromId(source)
@@ -72,6 +85,16 @@ lib.callback.register('prp_admin_v2:ban', function(source, data)
     end
 
     return true
+end)
+
+---@param source number
+---@param identifier string
+lib.callback.register('prp_admin_v2:unban', function(source, identifier)
+    local admin = Framework.getPlayerFromId(source)
+    
+    if not admin or not admin:hasOneOfGroups(config.adminPanel.allowedGroups) then return end
+
+    return unbanPlayer(source, identifier)
 end)
 
 ------------------------------------------------------------------------------------------------------------------------

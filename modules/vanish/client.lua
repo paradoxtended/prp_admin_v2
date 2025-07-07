@@ -1,0 +1,48 @@
+--[[
+    This script is taken from https://github.com/paradoxtended/prp_admin/blob/main/src/client/commands/noclip.ts and has been rewritten in Lua
+    retyped into lua
+
+    It is essentially the cloak script from the old version of prp_admin
+]]
+
+vanished = false
+
+RegisterNuiCallback('vanish', function(_, cb)
+    cb(1)
+    
+    vanished = not vanished
+
+    if vanished then
+        CreateThread(function()
+            while vanished do
+                SetEntityLocallyVisible(cache.ped)
+                Wait(0)
+            end
+        end)
+    end
+
+    ClearPedBloodDamage(cache.ped)
+    SetPedCanBeTargetted(cache.ped, not vanished)
+    SetPedCanRagdoll(cache.ped, not vanished)
+    SetPedCanRagdollFromPlayerImpact(cache.ped, not vanished)
+    SetPedRagdollOnCollision(cache.ped, not vanished)
+
+    SetEntityVisible(cache.ped, not vanished, false)
+    SetEveryoneIgnorePlayer(cache.playerId, vanished)
+    SetPoliceIgnorePlayer(cache.playerId, vanished)
+    SetEntityInvincible(cache.ped, vanished)
+    SetEntityAlpha(cache.ped, vanished and 150 or 255, false)
+
+    TriggerServerEvent('prp_admin_v2:vanish', vanished)
+end)
+
+---@param adminId number
+---@param state boolean
+RegisterNetEvent('prp_admin_v2:vanish', function(adminId, state)
+    local admin = GetPlayerFromServerId(adminId)
+    local ped = GetPlayerPed(admin)
+
+    if ped and ped ~= cache.ped then
+        SetEntityCollision(ped, not state, not state)
+    end
+end)

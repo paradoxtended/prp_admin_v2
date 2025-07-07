@@ -7,9 +7,10 @@ import { fetchNui } from "./utils/fetchNui";
 import type { CategoryProps } from "./typings/category";
 import Category from "./components/Category";
 import Dashboard from "./components/categories/Dashboard";
-import type { OpenData, Player } from "./typings/open";
+import type { ActionsProps, OpenData, Player } from "./typings/open";
 import Players from "./components/categories/Players";
 import { isEnvBrowser } from "./utils/misc";
+import Developer from "./components/categories/Developer";
 
 debugData<OpenData>([
   {
@@ -158,6 +159,7 @@ const App: React.FC = () => {
             <div className="w-full h-full">
               {currentCategory === 'dashboard' && <Dashboard data={data} changeCategory={(name: string) => changeCategory(name)} setPlayer={(data: Player) => setPlayer(data)} />}
               {currentCategory === 'players' && <Players data={data as OpenData} player={player} setPlayer={setPlayer} peds={peds} handleClose={handleClose} setShowModal={setShowModal} />}
+              {currentCategory === 'developer' && <Developer actions={data?.actions as ActionsProps} />}
             </div>
           </div>
         </div>

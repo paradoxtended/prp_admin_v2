@@ -8,6 +8,7 @@
     "player_kicked": "Player %s has been kicked for: %s",
     "kick_message": "[Admin] You have been kicked.\nReason: %s",
     "player_banned": "Player %s has been banned for: %s",
+    "player_unbanned": "Player %s has been unbanned.",
     "ban_message": "[Admin] You have been banned.\nReason: %s\nExpire: %s",
     "no_reason_provided": "No reason provided.",
     "being_checked": "You are being checked, wait a minute.",

@@ -18,6 +18,7 @@ require 'modules.names.server'
 require 'modules.messages.server'
 require 'modules.kick.server'
 require 'modules.ban.server'
+require 'modules.vanish.server'
 
 local db = require 'modules.db.server'
 

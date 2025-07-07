@@ -221,7 +221,7 @@ const PlayersTable: React.FC<{
 
                     fetchNui('kick', {
                         message: message,
-                        id: currentPlayer?.steam
+                        id: currentPlayer?.id
                     });
 
                     setCurrentPlayer(null);

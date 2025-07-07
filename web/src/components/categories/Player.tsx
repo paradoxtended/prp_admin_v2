@@ -70,7 +70,7 @@ const Player: React.FC<{
                 { name: 'open_inventory', label: Locale.ui_open_inventory || 'Open Inventory', shouldClose: true },
                 { name: 'freeze', label: Locale.ui_freeze || 'Freeze' },
                 { name: 'mute', label: Locale.ui_mute || 'Mute' },
-                { name: 'clothing_menu', label: Locale.ui_clothing_menu || 'Clothing Menu' },
+                { name: 'clothing_menu', label: Locale.ui_clothing_menu || 'Clothing Menu', shouldClose: true },
                 { name: 'give_item', label: Locale.ui_give_item || 'Give Item', modal: setItemModal },
                 { name: 'update_name', label: Locale.ui_update_char_names || 'Update character names', modal: setNamesModal }
             ],
@@ -192,7 +192,7 @@ const Player: React.FC<{
             <>
                 <div className='h-full flex flex-col gap-3 overflow-auto mr-5 pb-1'>
                     <div className="flex text-white items-center justify-between pr-4">
-                        <p className="font-bold text-3xl">{data.charName} ({data.stateId})</p>
+                        <p className="font-bold text-4xl">{data.charName} ({data.stateId})</p>
                         <div className="flex items-center gap-2">
                             <p className={`text-sm border rounded px-2 py-1
                                 ${data.online ? 'bg-lime-500/20 border-lime-500' : 'bg-red-500/20 border-red-600'}`}>{data.online ? 'Online' : 'Offline'}
@@ -340,6 +340,7 @@ const Player: React.FC<{
                         //Reset current player
                         currentPlayer(null);
                         handleClose();
+                        fetchPlayer(data.id);
                     }}
                 />
                 <BanModal 
@@ -367,6 +368,7 @@ const Player: React.FC<{
                         //Reset current player
                         currentPlayer(null);
                         handleClose();
+                        fetchPlayer(data.id);
                     }}
                 />
                 <UnbanModal
@@ -379,6 +381,7 @@ const Player: React.FC<{
                         fetchNui('unban', data.steam);
                         setShowModal(false);
                         setUnbanModal(false);
+                        fetchPlayer(data.id);
                     }}
                 />
             </>

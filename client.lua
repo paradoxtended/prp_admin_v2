@@ -21,6 +21,8 @@ require 'modules.teleport.client'
 require 'modules.messages.client'
 require 'modules.kick.client'
 require 'modules.ban.client'
+require 'modules.noclip.client'
+require 'modules.vanish.client'
 
 ---@param id? number
 ---@param cb any
@@ -41,6 +43,10 @@ RegisterNetEvent('prp_admin_v2:openAdminMenu', function(players, jobs)
                 players = players,
                 jobs = jobs
             },
+            actions = {
+                noclip = noclipActive,
+                vanish = vanished
+            }
         }
     })
 end)

@@ -3,6 +3,10 @@
 function teleportToPlayer(targetId, cb)
     if cb then cb(1) end
 
+    local isAdmin = lib.callback.await('prp_admin_v2:isAdmin', false)
+
+    if not isAdmin then return end
+
     local target = GetPlayerFromServerId(targetId)
 
     if not target or target == -1 then return end
@@ -31,6 +35,10 @@ end
 function teleportPlayerToMe(targetId, cb)
     if cb then cb(1) end
 
+    local isAdmin = lib.callback.await('prp_admin_v2:isAdmin', false)
+
+    if not isAdmin then return end
+
     local target = GetPlayerFromServerId(targetId)
 
     if not target or target == -1 then return end
@@ -53,6 +61,10 @@ end
 ---@param cb? fun(value: any)
 function teleportToPlayerCar(targetId, cb)
     if cb then cb(1) end
+
+    local isAdmin = lib.callback.await('prp_admin_v2:isAdmin', false)
+
+    if not isAdmin then return end
 
     local target = GetPlayerFromServerId(targetId)
     

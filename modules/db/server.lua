@@ -66,6 +66,23 @@ function db.getAllPlayers()
                 stateId = data.id
             })
         end
+    else
+        for _, data in ipairs(players) do
+            local player = Framework.getPlayerFromIdentifier(data.citizenid)
+
+            table.insert(database, {
+                characterName = data.charinfo.firstname .. ' ' .. data.charinfo.lastname,
+                steam = data.citizenid,
+                admin = player and (function()
+                    for _, group in ipairs(config.adminPanel.allowedGroups) do
+                        if IsPlayerAceAllowed(player.source, group) then return true end
+                    end
+
+                    return false
+                end)() or false, -- QBCore does not use permissions table anymore in database
+                stateId = data.id
+            })
+        end
     end
 
     return database
