@@ -19,6 +19,7 @@ require 'modules.messages.server'
 require 'modules.kick.server'
 require 'modules.ban.server'
 require 'modules.vanish.server'
+require 'modules.objects.server'
 
 local db = require 'modules.db.server'
 

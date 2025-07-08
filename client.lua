@@ -23,6 +23,8 @@ require 'modules.kick.client'
 require 'modules.ban.client'
 require 'modules.noclip.client'
 require 'modules.vanish.client'
+require 'modules.blips_names.client'
+require 'modules.objects.client'
 
 ---@param id? number
 ---@param cb any
@@ -35,6 +37,9 @@ end)
 ---@param players PlayerData[]
 ---@param jobs JobsData[]
 RegisterNetEvent('prp_admin_v2:openAdminMenu', function(players, jobs)
+    local isAdmin = lib.callback.await('prp_admin_v2:isAdmin', false)
+    if not isAdmin then return end
+
     SetNuiFocus(true, true)
     SendNUIMessage({
         action = 'openAdmin',
@@ -45,7 +50,9 @@ RegisterNetEvent('prp_admin_v2:openAdminMenu', function(players, jobs)
             },
             actions = {
                 noclip = noclipActive,
-                vanish = vanished
+                vanish = vanished,
+                blips = playerBlips,
+                names = playerNames
             }
         }
     })

@@ -132,7 +132,7 @@ end
 
 -- Main toggle function
 ---@param cb? fun(data: any)
-local function ToggleNoclip(cb)
+local function ToggleNoclip(_, cb)
     if cb then cb(1) end
 
     local isAdmin = lib.callback.await('prp_admin_v2:isAdmin', false)

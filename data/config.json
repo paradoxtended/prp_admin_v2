@@ -11,6 +11,10 @@
     },
     "binds": {
         "vanish": "END",
-        "noclip": "HOME"
-    }
+        "noclip": "HOME",
+        "blips": "INSERT",
+        "names": "DELETE"
+    },
+    "blipInterval": 5000,
+    "namesMaxDistance": 150
 }

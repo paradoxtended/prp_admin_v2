@@ -16,5 +16,14 @@
     "in_garage": "In garage",
     "out_garage": "Out garage",
     "impounded": "Impounded",
-    "vehicle_deleted": "Vehicle with plate %s has been deleted from garage."
+    "vehicle_deleted": "Vehicle with plate %s has been deleted from garage.",
+    "blips_activated": "Players blips are shown on map.",
+    "blips_disabled": "Players blips has been hidden.",
+    "names_activated": "Players names are visible.",
+    "names_disabled": "Players names are hidden.",
+    "exit": "EXIT",
+    "toggle_snapping": "TOGGLE SNAPPING",
+    "change_heading": "CHANGE HEADING",
+    "confirm": "CONFIRM",
+    "entity_created": "The entity has been created."
 }
