@@ -16,6 +16,8 @@ interface PlayersProps {
 export interface ActionsProps {
     noclip: boolean;
     vanish: boolean;
+    names: boolean;
+    blips: boolean;
 }
 
 export interface OpenData {

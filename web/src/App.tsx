@@ -159,7 +159,7 @@ const App: React.FC = () => {
             <div className="w-full h-full">
               {currentCategory === 'dashboard' && <Dashboard data={data} changeCategory={(name: string) => changeCategory(name)} setPlayer={(data: Player) => setPlayer(data)} />}
               {currentCategory === 'players' && <Players data={data as OpenData} player={player} setPlayer={setPlayer} peds={peds} handleClose={handleClose} setShowModal={setShowModal} />}
-              {currentCategory === 'developer' && <Developer actions={data?.actions as ActionsProps} />}
+              {currentCategory === 'developer' && <Developer actions={data?.actions as ActionsProps} close={handleClose} />}
             </div>
           </div>
         </div>
