@@ -1,6 +1,5 @@
 --[[
     This script is taken from https://github.com/paradoxtended/prp_admin/blob/main/src/client/commands/noclip.ts and has been rewritten in Lua
-    retyped into lua
 
     It is essentially the noclip script from the old version of prp_admin
 ]]
@@ -132,7 +131,14 @@ local function StopNoclip()
 end
 
 -- Main toggle function
-function ToggleNoclip()
+---@param cb? fun(data: any)
+local function ToggleNoclip(cb)
+    if cb then cb(1) end
+
+    local isAdmin = lib.callback.await('prp_admin_v2:isAdmin', false)
+
+    if not isAdmin then return end
+
     noclipActive = not noclipActive
     entity = IsPedInAnyVehicle(PlayerPedId(), false) and GetVehiclePedIsIn(PlayerPedId(), false) or PlayerPedId()
 
@@ -153,12 +159,13 @@ function ToggleNoclip()
     end
 end
 
-RegisterNuiCallback('noclip', function(_, cb)
-    cb(1)
-    
-    local isAdmin = lib.callback.await('prp_admin_v2:isAdmin', false)
+RegisterNuiCallback('noclip', ToggleNoclip)
 
-    if not isAdmin then return end
-        
-    ToggleNoclip()
-end)
+lib.addKeybind({
+    name = 'prp_admin_v2:toggleNoclip',
+    description = 'Toggle Noclip (Admins only)',
+    defaultKey = config.binds.noclip,
+    onReleased = function()
+        ToggleNoclip()
+    end
+})

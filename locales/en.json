@@ -12,5 +12,9 @@
     "ban_message": "[Admin] You have been banned.\nReason: %s\nExpire: %s",
     "no_reason_provided": "No reason provided.",
     "being_checked": "You are being checked, wait a minute.",
-    "unknown_acc_name": "unknown"
+    "unknown_acc_name": "unknown",
+    "in_garage": "In garage",
+    "out_garage": "Out garage",
+    "impounded": "Impounded",
+    "vehicle_deleted": "Vehicle with plate %s has been deleted from garage."
 }

@@ -5,7 +5,9 @@ local Query = {
     LOAD_BAN = 'SELECT * FROM prp_admin_bans WHERE license = ?',
     DELETE_BAN = 'DELETE FROM prp_admin_bans WHERE license = ?',
     SELECT_PLAYERS = Framework.name == 'es_extended' and 'SELECT * FROM users' or 'SELECT * FROM players',
-    SELECT_PLAYER = Framework.name == 'es_extended' and 'SELECT * FROM users WHERE identifier = ?' or 'SELECT * FROM players WHERE citizenid = ?'
+    SELECT_PLAYER = Framework.name == 'es_extended' and 'SELECT * FROM users WHERE identifier = ?' or 'SELECT * FROM players WHERE citizenid = ?',
+    OWNED_VEHICLES = Framework.name == 'es_extended' and 'SELECT * FROM owned_vehicles WHERE owner = ? and job is NULL' or 'SELECT * FROM player_vehicles WHERE citizenid = ? and job is NULL',
+    DELETE_VEHICLE = Framework.name == 'es_extended' and 'DELETE FROM owned_vehicles WHERE plate = ?' or 'DELETE FROM player_vehicles WHERE plate = ?'
 }
 
 local db = {}
@@ -42,6 +44,14 @@ end
 
 function db.deleteBan(license)
     return MySQL.prepare.await(Query.DELETE_BAN, { license })
+end
+
+function db.getOwnedVehicles(identifier)
+    return MySQL.prepare.await(Query.OWNED_VEHICLES, { identifier })
+end
+
+function db.deleteVehicle(plate)
+    return MySQL.prepare.await(Query.DELETE_VEHICLE, { plate })
 end
 
 ---@return DatabasePlayerData[]

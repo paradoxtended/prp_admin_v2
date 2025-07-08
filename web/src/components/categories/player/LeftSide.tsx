@@ -220,7 +220,7 @@ const LeftSide: React.FC<{
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         <p className="text-neutral-600">{Locale.ui_status || 'STATUS'}</p>
-                                        <p className="text-[13px]">{vehicle.active ? (Locale.ui_vehicle_out || 'Out garage') : (Locale.ui_vehicle_in || 'In garage')}</p>
+                                        <p className="text-[13px]">{vehicle.active}</p>
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         <p className="text-neutral-600 flex items-center gap-2">{Locale.ui_plate || 'PLATE'} <i className="fa-regular fa-copy text-[13px]
@@ -230,7 +230,11 @@ const LeftSide: React.FC<{
                                     </div>
                                 </div>
                                 <button className="w-fit text-[13px] bg-neutral-800 px-10 py-1 rounded-full border border-neutral-700
-                                hover:bg-neutral-700 hover:border-neutral-500 duration-200">{Locale.ui_remove || 'Remove'}</button>
+                                hover:bg-neutral-700 hover:border-neutral-500 duration-200"
+                                onClick={() => {
+                                    fetchNui('remove_vehicle', vehicle.plate)
+                                    setTimeout(() => fetchPlayer(data.id), 250)
+                                }}>{Locale.ui_remove || 'Remove'}</button>
                             </div>
                         ))}
                     </div>

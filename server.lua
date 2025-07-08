@@ -105,6 +105,9 @@ lib.callback.register('prp_admin_v2:getPlayerData', function(source, playerId)
     if not player or not player:hasOneOfGroups(config.adminPanel.allowedGroups) then return end
 
     local target = Framework.getPlayerFromId(playerId)
+    local vehicles = db.getOwnedVehicles(target and target:getIdentifier() or playerId)
+
+    local vehiclesActions = lib.callback.await('prp_admin_v2:getVehicles', source, vehicles, playerId)
 
     if target then
         local coords = GetEntityCoords(GetPlayerPed(playerId))
@@ -120,7 +123,8 @@ lib.callback.register('prp_admin_v2:getPlayerData', function(source, playerId)
             coords = { x = coords.x, y = coords.y, z = coords.z },
             account = { bank = target:getAccountMoney('bank'), cash = target:getAccountMoney('money') },
             jobs = { name = select(1, target:getJob()), label = select(2, target:getJob()), grade = select(2, target:getJobGrade()) },
-            ped = GetEntityModel(GetPlayerPed(playerId))
+            ped = GetEntityModel(GetPlayerPed(playerId)),
+            vehicles = vehiclesActions
         }
     else
         local data = db.loadPlayer(playerId)
@@ -139,9 +143,22 @@ lib.callback.register('prp_admin_v2:getPlayerData', function(source, playerId)
                     or { name = json.decode(data.job).name, label = json.decode(data.job).label, grade = json.decode(data.job).grade.name },
             ped = PedModels[identifier] and GetEntityModel(PedModels[identifier])
                     or Framework.name == 'es_extended' and (data.sex == 'm' and 'mp_m_freemode_01' or 'mp_f_freemode_01')
-                                                       or (json.decode(data.charinfo).gender == 0 and 'mp_m_freemode_01' or 'mp_f_freemode_01') 
+                                                       or (json.decode(data.charinfo).gender == 0 and 'mp_m_freemode_01' or 'mp_f_freemode_01'),
+            vehicles = vehiclesActions
         }
     end
+end)
+
+---@param source number
+---@param plate string
+lib.callback.register('prp_admin_v2:deleteVehicle', function(source, plate)
+    local player = Framework.getPlayerFromId(source)
+
+    if not player or not player:hasOneOfGroups(config.adminPanel.allowedGroups) then return end
+
+    db.deleteVehicle(plate)
+
+    return true
 end)
 
 -- Database

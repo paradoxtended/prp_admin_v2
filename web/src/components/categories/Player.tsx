@@ -25,7 +25,7 @@ export interface PlayerProps {
     ped: number | string;
     vehicles: {
         current?: { model: string; plate: string },
-        owned?: { model: string; plate: string, active?: boolean }[]
+        owned?: { model: string; plate: string, active?: string }[]
     }
 }
 
@@ -114,10 +114,10 @@ const Player: React.FC<{
                 vehicles: {
                     current: { model: 'swift', plate: '00BUKO37' },
                     owned: [
-                        { model: 'Sandking XL', plate: 'O2BL92SX', active: true },
+                        { model: 'Sandking XL', plate: 'O2BL92SX', active: 'In garage' },
                         { model: 'Adder', plate: '5412TILL' },
                         { model: 'T20', plate: 'TL91ULLU' },
-                        { model: 'BMW M3', plate: '125ASD42', active: true }
+                        { model: 'BMW M3', plate: '125ASD42', active: 'Out garage' }
                     ]
                 }
             });

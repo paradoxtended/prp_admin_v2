@@ -1,14 +1,18 @@
 --[[
     This script is taken from https://github.com/paradoxtended/prp_admin/blob/main/src/client/commands/noclip.ts and has been rewritten in Lua
-    retyped into lua
 
     It is essentially the cloak script from the old version of prp_admin
 ]]
 
 vanished = false
 
-RegisterNuiCallback('vanish', function(_, cb)
-    cb(1)
+---@param cb? fun(data: any)
+local function vanish(cb)
+    if cb then cb(1) end
+
+    local isAdmin = lib.callback.await('prp_admin_v2:isAdmin', false)
+
+    if not isAdmin then return end
     
     vanished = not vanished
 
@@ -34,7 +38,9 @@ RegisterNuiCallback('vanish', function(_, cb)
     SetEntityAlpha(cache.ped, vanished and 150 or 255, false)
 
     TriggerServerEvent('prp_admin_v2:vanish', vanished)
-end)
+end
+
+RegisterNuiCallback('vanish', vanish)
 
 ---@param adminId number
 ---@param state boolean
@@ -46,3 +52,12 @@ RegisterNetEvent('prp_admin_v2:vanish', function(adminId, state)
         SetEntityCollision(ped, not state, not state)
     end
 end)
+
+lib.addKeybind({
+    name = 'prp_admin_v2:toggleVanish',
+    description = 'Toggle Vanish (Admins only)',
+    defaultKey = config.binds.vanish,
+    onReleased = function()
+        vanish()
+    end
+})

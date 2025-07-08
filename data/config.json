@@ -8,5 +8,9 @@
             { "label": "Medical", "color": "#f87171", "jobs": ["ambulance"] },
             { "label": "Police", "color": "#2563eb", "jobs": ["police"] }
         ]
+    },
+    "binds": {
+        "vanish": "END",
+        "noclip": "HOME"
     }
 }
