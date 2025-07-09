@@ -1,0 +1,21 @@
+{
+    "Lua.diagnostics.disable": [
+        "duplicate-doc-field",
+        "missing-fields",
+        "trailing-space",
+        "lowercase-global",
+        "redundant-return-value",
+        "missing-parameter",
+        "unknown-symbol",
+        "exp-in-action",
+        "undefined-global",
+        "undefined-doc-name",
+        "redefined-local",
+        "miss-symbol",
+        "malformed-number",
+        "miss-end",
+        "param-type-mismatch",
+        "undefined-field",
+        "deprecated"
+    ]
+}

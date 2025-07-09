@@ -2,7 +2,7 @@ import type { EntityProps as EntityData } from "../typings/open";
 import { Locale } from "./store/locale"
 
 const EntityProps: React.FC<{
-    entity: EntityData;
+    entity: EntityData | null;
 }> = ({ entity }) => {
     return (
         <div className="entity-wrapper">

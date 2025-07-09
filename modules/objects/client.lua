@@ -10,6 +10,29 @@ local settingUp = false
 ---@type { model?: string, freeze?: boolean }
 local props = {}
 
+local dui = lib.dui:new({
+    url = ("nui://%s/web/build/index.html"):format(cache.resource), 
+    width = 1920,
+    height = 1080
+})
+
+local scaleformHandle = RequestScaleformMovie("generic_texture_renderer_2") -- The scaleform you want to use
+while not HasScaleformMovieLoaded(scaleformHandle) do -- Ensure the scaleform is actually loaded before using
+    Wait(0)
+end
+
+PushScaleformMovieFunction(scaleformHandle, 'SET_TEXTURE')
+
+PushScaleformMovieMethodParameterString(dui.dictName)
+PushScaleformMovieMethodParameterString(dui.txtName)
+
+PushScaleformMovieFunctionParameterInt(0)
+PushScaleformMovieFunctionParameterInt(0)
+PushScaleformMovieFunctionParameterInt(1920)
+PushScaleformMovieFunctionParameterInt(1080)
+
+PopScaleformMovieFunctionVoid()
+
 local function keyListener()
     --- ESC
     if IsControlJustReleased(2, 200) then settingUp = false end
@@ -137,7 +160,8 @@ local function GetEntityProps(entity)
     local model = GetEntityModel(entity)
     local networkOwner = GetPlayerServerId(NetworkGetEntityOwner(entity))
 
-    SendNUIMessage({
+    -- Change url
+    dui:sendMessage({
         action = 'entityProps',
         data = {
             coords = coords,
@@ -151,12 +175,14 @@ end
 
 ---@param escaped boolean
 local function stopFindingObject(escaped)
-    finding = false
+    SetTimeout(250, function ()
+        finding = false
+    end)
 
     if not highlightedEntity then return end
 
     SetEntityDrawOutline(highlightedEntity, false) 
-    SendNUIMessage({ action = 'hideEntityProps' })
+    dui:sendMessage({ action = 'hideEntityProps' })
 
     if escaped then return end
 
@@ -166,6 +192,19 @@ local function stopFindingObject(escaped)
     highlightedEntity = nil
 end
 
+---Function yoinked from https://stackoverflow.com/ (hard math :sadge:)
+local function getRotationBetweenCoords(from, to)
+    local dir = to - from
+    local rotZ = math.deg(math.atan2(dir.y, dir.x))
+    local distance = math.sqrt(dir.x * dir.x + dir.y * dir.y)
+    local rotX = -math.deg(math.atan(dir.z / distance))
+    
+    return vector3(rotX - 30.0, 0.0, rotZ + 75.0) -- 75 for little perspective detail
+end
+
+local width = 0.25
+local height = width * (9 / 16)
+
 local function lookForObject()
     local lastCoords = lastCoords or vector3(0, 0, 0)
 
@@ -173,6 +212,19 @@ local function lookForObject()
         0.1,
         ---@diagnostic disable-next-line: param-type-mismatch
         0, 255, 0, 150, false, false, 0, true, false, false, false)
+
+    local scaleformPos = vector3(lastCoords.x, lastCoords.y, lastCoords.z + 1.5)
+    local camPos = GetEntityCoords(cache.ped)
+    local rotation = getRotationBetweenCoords(scaleformPos, camPos)
+
+    DrawScaleformMovie_3dSolid(
+        scaleformHandle,
+        scaleformPos.x, scaleformPos.y, scaleformPos.z,
+        rotation.x, rotation.y, rotation.z,
+        0.0, 0.0, 0.0,
+        width, height, 1,
+        2
+    )
 
     DisablePlayerFiring(cache.playerId, true)
     DisableFrontendThisFrame()
@@ -214,7 +266,7 @@ local function createObjectThread()
         elseif not valid then
             if highlightedEntity then 
                 SetEntityDrawOutline(highlightedEntity, false)
-                SendNUIMessage({ action = 'hideEntityProps' })
+                dui:sendMessage({ action = 'hideEntityProps' })
                 highlightedEntity = nil
             end
         end
