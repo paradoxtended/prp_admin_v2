@@ -20,6 +20,7 @@ require 'modules.kick.server'
 require 'modules.ban.server'
 require 'modules.vanish.server'
 require 'modules.objects.server'
+require 'modules.vehicles.server'
 
 local db = require 'modules.db.server'
 

@@ -49,6 +49,9 @@ end
 
 ---@param data { model: string, freeze?: boolean }
 local function createLocalObject(data)
+    local isAdmin = lib.callback.await('prp_admin_v2:isAdmin', false)
+    if not isAdmin then return end
+    
     local curCoords = GetEntityCoords(cache.ped)
     
     local model = data.model
@@ -125,6 +128,27 @@ end)
 local finding = false
 local highlightedEntity
 
+---@param entity number
+local function GetEntityProps(entity)
+    local entityCoords = GetEntityCoords(entity)
+
+    local coords = { x = entityCoords.x, y = entityCoords.y, z = entityCoords.z }
+    local heading = GetEntityHeading(entity)
+    local model = GetEntityModel(entity)
+    local networkOwner = GetPlayerServerId(NetworkGetEntityOwner(entity))
+
+    SendNUIMessage({
+        action = 'entityProps',
+        data = {
+            coords = coords,
+            heading = heading,
+            model = model,
+            networkOwner = networkOwner,
+            plate = IsEntityAVehicle(entity) and GetVehicleNumberPlateText(entity) or nil
+        }
+    })
+end
+
 ---@param escaped boolean
 local function stopFindingObject(escaped)
     finding = false
@@ -132,6 +156,7 @@ local function stopFindingObject(escaped)
     if not highlightedEntity then return end
 
     SetEntityDrawOutline(highlightedEntity, false) 
+    SendNUIMessage({ action = 'hideEntityProps' })
 
     if escaped then return end
 
@@ -177,17 +202,19 @@ local function createObjectThread()
         
         hit, entity, lastCoords = raycast()
 
-        local valid = hit and entity and IsEntityAnObject(entity) and NetworkGetEntityIsNetworked(entity)
+        local valid = hit and entity and (IsEntityAnObject(entity) or IsEntityAVehicle(entity)) and NetworkGetEntityIsNetworked(entity)
 
         if valid and highlightedEntity ~= entity then
             SetEntityDrawOutline(entity, true)
             SetEntityDrawOutlineColor(0, 255, 0, 255)
+            GetEntityProps(entity)
 
             if highlightedEntity then SetEntityDrawOutline(highlightedEntity, false) end
             highlightedEntity = entity
         elseif not valid then
             if highlightedEntity then 
-                SetEntityDrawOutline(highlightedEntity, false) 
+                SetEntityDrawOutline(highlightedEntity, false)
+                SendNUIMessage({ action = 'hideEntityProps' })
                 highlightedEntity = nil
             end
         end
@@ -200,6 +227,9 @@ end
 ---@param cb? fun(data: any)
 local function deleteObject(closest, cb)
     if cb then cb(1) end
+
+    local isAdmin = lib.callback.await('prp_admin_v2:isAdmin', false)
+    if not isAdmin then return end
 
     if closest then
         local coords = GetEntityCoords(cache.ped)

@@ -24,3 +24,11 @@ export interface OpenData {
     players: PlayersProps,
     actions?: ActionsProps
 }
+
+export interface EntityProps {
+    coords: { x: number; y: number; z: number };
+    heading: number;
+    model: string | number;
+    networkOwner?: string | number;
+    plate?: string;
+}

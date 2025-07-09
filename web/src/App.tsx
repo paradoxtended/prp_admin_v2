@@ -7,10 +7,11 @@ import { fetchNui } from "./utils/fetchNui";
 import type { CategoryProps } from "./typings/category";
 import Category from "./components/Category";
 import Dashboard from "./components/categories/Dashboard";
-import type { ActionsProps, OpenData, Player } from "./typings/open";
+import type { ActionsProps, EntityProps as EntityData, OpenData, Player } from "./typings/open";
 import Players from "./components/categories/Players";
 import { isEnvBrowser } from "./utils/misc";
 import Developer from "./components/categories/Developer";
+import EntityProps from "./components/EntityProps";
 
 debugData<OpenData>([
   {
@@ -47,6 +48,7 @@ const App: React.FC = () => {
   const [peds, setPeds] = useState();
   const [screenshot, setScreenshot] = useState<any | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [entity, setEntity] = useState<EntityData | null>(null);
 
   async function fetchPeds() {
    const headers = {};
@@ -80,6 +82,24 @@ const App: React.FC = () => {
     setData(data);
     setVisible(true);
   });
+
+  useNuiEvent('entityProps', (data: EntityData) => {
+    setEntity(data);
+  })
+
+  useNuiEvent('hideEntityProps', () => {
+    const wrapper = document.querySelector('.entity-modal') as HTMLElement;
+
+    if (wrapper === null) return;
+
+    wrapper.style.animation = 'flyOut 250ms forwards';
+
+    setTimeout(() => {
+      if (entity !== null) {
+        setEntity(null)
+      };
+    }, 250)
+  })
 
   useNuiEvent('screenshot', (image: string) => {
     setScreenshot(image);
@@ -164,6 +184,9 @@ const App: React.FC = () => {
           </div>
         </div>
       </Fade>
+      {entity !== null &&
+        <EntityProps entity={entity} />
+      }
     </>
   )
 };
