@@ -25,6 +25,7 @@ require 'modules.noclip.client'
 require 'modules.vanish.client'
 require 'modules.blips_names.client'
 require 'modules.objects.client'
+require 'modules.vehicles.client'
 
 ---@param id? number
 ---@param cb any

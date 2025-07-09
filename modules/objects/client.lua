@@ -1,5 +1,8 @@
 local raycast = lib.raycast.fromCamera
 local IsControlJustReleased = IsControlJustReleased
+local DisablePlayerFiring = DisablePlayerFiring
+
+local lastCoords
 
 local snapping = false
 local heading = 0.0
@@ -36,22 +39,11 @@ end
 
 ---@param object number Entity (object)
 local function settingObject(object)
-    DisableFrontendThisFrame()
-
     keyListener()
-    if IsControlJustPressed(0, 38) then requestPlaceObject(GetEntityCoords(object), GetEntityHeading(object)) end
 
-    local hit, _, coords = raycast(nil, nil, 30)
+    if IsDisabledControlJustPressed(0, 24) then requestPlaceObject(GetEntityCoords(object), GetEntityHeading(object)) end
 
-    if hit then
-        SetEntityCoords(object, coords.x, coords.y, coords.z, false, false, false, false)
-        SetEntityHeading(object, heading)
-
-        if snapping then
-            PlaceObjectOnGroundProperly(object)
-        end
-    end
-
+    DisablePlayerFiring(cache.playerId, true)
     DisableFrontendThisFrame()
 end
 
@@ -72,27 +64,44 @@ local function createLocalObject(data)
         { key = 'ESC', text = locale('exit') },
         { key = 'Z', text = locale('toggle_snapping') },
         { key = 'MWHEEL', text = locale('change_heading') },
-        { key = 'E', text = locale('confirm') }
+        { key = 'LMB', text = locale('confirm') }
     })
 
     settingUp = true
 
     CreateThread(function()
         while settingUp do
-            Wait(0)
             settingObject(object)
-        end
-
-        snapping = false
-        heading = 0.0
-        settingUp = false
-
-        prp.hideTextUI()
-
-        if DoesEntityExist(object) then
-            DeleteEntity(object)
+            Wait(0)
         end
     end)
+
+    while settingUp do
+        local hit
+        
+        hit, _, lastCoords = raycast()
+
+        if hit then
+            SetEntityCoords(object, lastCoords.x, lastCoords.y, lastCoords.z, false, false, false, false)
+            SetEntityHeading(object, heading)
+        end
+
+        if snapping then
+            PlaceObjectOnGroundProperly(object)
+        end
+
+        Wait(0)
+    end
+
+    snapping = false
+    heading = 0.0
+    settingUp = false
+
+    prp.hideTextUI()
+
+    if DoesEntityExist(object) then
+        DeleteEntity(object)
+    end
 end
 
 ---@param data { model: string, freeze?: boolean }
@@ -108,3 +117,110 @@ RegisterNuiCallback('spawn_object', function(data, cb)
 
     createLocalObject(data)
 end)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+--- DELETING OBJECTS
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local finding = false
+local highlightedEntity
+
+---@param escaped boolean
+local function stopFindingObject(escaped)
+    finding = false
+
+    if not highlightedEntity then return end
+
+    SetEntityDrawOutline(highlightedEntity, false) 
+
+    if escaped then return end
+
+    local netId = NetworkGetNetworkIdFromEntity(highlightedEntity)
+    TriggerServerEvent('prp_admin_v2:deleteObject', netId)
+
+    highlightedEntity = nil
+end
+
+local function lookForObject()
+    local lastCoords = lastCoords or vector3(0, 0, 0)
+
+    DrawMarker(28, lastCoords.x, lastCoords.y, lastCoords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1,
+        0.1,
+        ---@diagnostic disable-next-line: param-type-mismatch
+        0, 255, 0, 150, false, false, 0, true, false, false, false)
+
+    DisablePlayerFiring(cache.playerId, true)
+    DisableFrontendThisFrame()
+
+    if IsControlJustReleased(2, 200) or IsDisabledControlJustPressed(0, 24) then -- 200 = ESC, 24 = LMB
+        stopFindingObject(IsControlJustReleased(2, 200))
+    end
+end
+
+local function createObjectThread()
+    prp.showTextUI({
+        { key = 'ESC', text = locale('exit') },
+        { key = 'LMB', text = locale('confirm') }
+    })
+
+    CreateThread(function()
+        while finding do
+            lookForObject()
+            Wait(0)
+        end
+
+        prp.hideTextUI()
+    end)
+
+    while finding do
+        local hit, entity
+        
+        hit, entity, lastCoords = raycast()
+
+        local valid = hit and entity and IsEntityAnObject(entity) and NetworkGetEntityIsNetworked(entity)
+
+        if valid and highlightedEntity ~= entity then
+            SetEntityDrawOutline(entity, true)
+            SetEntityDrawOutlineColor(0, 255, 0, 255)
+
+            if highlightedEntity then SetEntityDrawOutline(highlightedEntity, false) end
+            highlightedEntity = entity
+        elseif not valid then
+            if highlightedEntity then 
+                SetEntityDrawOutline(highlightedEntity, false) 
+                highlightedEntity = nil
+            end
+        end
+
+        Wait(0)
+    end
+end
+
+---@param closest boolean
+---@param cb? fun(data: any)
+local function deleteObject(closest, cb)
+    if cb then cb(1) end
+
+    if closest then
+        local coords = GetEntityCoords(cache.ped)
+        local object = lib.getClosestObject(coords, 5.0)
+
+        if object and NetworkGetEntityIsNetworked(object) then
+            local netId = NetworkGetNetworkIdFromEntity(object)
+            TriggerServerEvent('prp_admin_v2:deleteObject', netId)
+        else
+            prp.notify({
+                description = locale('no_entity'),
+                type = 'error'
+            })
+        end
+
+        return
+    end
+
+    finding = true
+
+    createObjectThread()
+end
+
+RegisterNuiCallback('delete_entity', deleteObject)

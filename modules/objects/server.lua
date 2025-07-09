@@ -12,3 +12,19 @@ lib.callback.register('prp_admin_v2:createObject', function(source, coords, head
 
     return true
 end)
+
+---@param netId number
+RegisterNetEvent('prp_admin_v2:deleteObject', function(netId)
+    local source = source
+
+    local player = Framework.getPlayerFromId(source)
+    local entity = NetworkGetEntityFromNetworkId(netId)
+
+    if not player
+    or not player:hasOneOfGroups(config.adminPanel.allowedGroups)
+    or not entity then
+        return
+    end
+
+    DeleteEntity(entity)
+end)

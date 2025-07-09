@@ -25,5 +25,6 @@
     "toggle_snapping": "TOGGLE SNAPPING",
     "change_heading": "CHANGE HEADING",
     "confirm": "CONFIRM",
-    "entity_created": "The entity has been created."
+    "entity_created": "The entity has been created.",
+    "no_entity": "There is no entity near you."
 }
