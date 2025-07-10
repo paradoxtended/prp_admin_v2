@@ -1,5 +1,11 @@
 lib.locale()
 
+-- Do not change this, unless you know what ur doing
+local MAX_ENTRIES <const> = 12
+
+---@type { name: string, uv: number }[]
+local Chart = {}
+
 ------------------------------------------------------------------------------------------------------------------------------------
 --- MODULES
 ------------------------------------------------------------------------------------------------------------------------------------
@@ -95,7 +101,7 @@ lib.addCommand(config.adminPanel.command, {
         jobs = initDashboardJobs()
     end
 
-    TriggerClientEvent('prp_admin_v2:openAdminMenu', source, players, jobs)
+    TriggerClientEvent('prp_admin_v2:openAdminMenu', source, players, jobs, Chart)
 end)
 
 ---@param source number
@@ -183,4 +189,68 @@ lib.callback.register('prp_admin_v2:isAdmin', function(source)
     local player = Framework.getPlayerFromId(source)
 
     return player and player:hasOneOfGroups(config.adminPanel.allowedGroups)
+end)
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--- DASHBOARD CHART
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+MySQL.ready(function()
+    MySQL.query([[CREATE TABLE IF NOT EXISTS `prp_admin_chart` (
+        `time_str` VARCHAR(5) NOT NULL,
+		`time` timestamp NULL DEFAULT current_timestamp(),
+		`player_count` INT NOT NULL
+	)]])
+
+    -- Load old data if server has been restarted or off for some time
+    local results = MySQL.query.await([[
+        SELECT time_str AS name, player_count AS uv
+        FROM prp_admin_chart
+        WHERE time >= NOW() - INTERVAL 1 HOUR
+        ORDER BY time ASC
+    ]])
+
+    for _, row in ipairs(results) do
+        table.insert(Chart, {
+            name = row.name,
+            uv = row.uv
+        })
+    end
+end)
+
+local function FormatTime()
+    return os.date('%H:%M')
+end
+
+local function UpdateDashboard()
+    local time = FormatTime()
+    local plyCount = #GetPlayers()
+
+    table.insert(Chart, {
+        name = time,
+        uv = plyCount
+    })
+
+    if #Chart > MAX_ENTRIES then
+        table.remove(Chart, 1)
+    end
+
+    MySQL.prepare.await('INSERT INTO prp_admin_chart (time_str, player_count) VALUES (?, ?)', {
+        time,
+        plyCount
+    })
+end
+
+local function CleanOldEntries()
+    return MySQL.prepare.await('DELETE FROM prp_admin_chart WHERE time < NOW() - INTERVAL 1 DAY')
+end
+
+lib.cron.new('*/5 * * * *', UpdateDashboard)
+lib.cron.new('0 0 * * *', CleanOldEntries)
+
+--- Server was offline on midnight ??
+AddEventHandler('onResourceStart', function(resourceName)
+    if GetCurrentResourceName() == resourceName then
+        CleanOldEntries()
+    end
 end)

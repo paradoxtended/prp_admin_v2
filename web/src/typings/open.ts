@@ -8,6 +8,8 @@ export interface Player {
     stateId: number;
 }
 
+type ChartProps = { name: string; uv: number }[]
+
 interface PlayersProps {
     players: Player[]
     jobs: { label: string; amount: number; color: string; }[];
@@ -22,7 +24,8 @@ export interface ActionsProps {
 
 export interface OpenData {
     players: PlayersProps,
-    actions?: ActionsProps
+    actions?: ActionsProps,
+    chart: ChartProps;
 }
 
 export interface EntityProps {

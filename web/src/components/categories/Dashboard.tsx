@@ -1,3 +1,4 @@
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useEffect, useState } from "react";
 import Loading from "../utils/Loading";
 import { Locale } from "../store/locale";
@@ -16,7 +17,7 @@ const Dashboard: React.FC<{
 
     return (
         visible ? (
-            <div className="h-full pr-10">
+            <div className="h-full pr-10 flex flex-col gap-3">
                 <div className="w-full h-1/2 flex gap-3">
                     <div className="w-3/4 h-fit max-h-[100%] p-5 bg-neutral-900 border border-neutral-700 rounded text-white">
                         <div className="flex items-center justify-between">
@@ -54,9 +55,49 @@ const Dashboard: React.FC<{
                         </div>
                     </div>
                 </div>
+                <div className="w-full h-[300px] p-5 bg-neutral-900 border border-neutral-700 rounded text-white text-sm flex flex-col gap-3">
+                    <p className="font-semibold text-[15px]">{Locale.ui_players_activity || 'Players Activity'}</p>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart
+                        data={data?.chart}
+                        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                        >
+                        <defs>
+                            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#4d7c0f" stopOpacity={0.8}/>
+                            <stop offset="100%" stopColor="#000000" stopOpacity={0.8}/>
+                            </linearGradient>
+                        </defs>
+                        <XAxis dataKey="name" stroke="#737373" fontSize={13} />
+                        <YAxis stroke="#737373" fontSize={13} allowDecimals={false} />
+                        <CartesianGrid vertical={false} opacity={0.1} />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Area type="monotone" dataKey="uv" stroke="#84cc16" fillOpacity={1} fill="url(#colorUv)" />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                </div>
             </div>
         ) : <Loading />
     )
+};
+
+const CustomTooltip: React.FC<{
+    active?: boolean;
+    payload?: any;
+    label?: any;
+}> = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-neutral-900 border border-neutral-700 shadow rounded p-2 text-sm">
+        <p className="text-neutral-500">{Locale.ui_time || 'Time'}: {label}</p>
+        <p className="text-lime-500 font-semibold">
+          {Locale.ui_amount || 'Amount'}: {payload[0].value}
+        </p>
+      </div>
+    );
+  }
+
+  return null;
 };
 
 export default Dashboard;

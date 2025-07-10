@@ -13,7 +13,6 @@ import { isEnvBrowser } from "./utils/misc";
 import Developer from "./components/categories/Developer";
 import EntityProps from "./components/EntityProps";
 
-/*
 debugData<OpenData>([
   {
     action: 'openAdmin',
@@ -31,12 +30,27 @@ debugData<OpenData>([
           { label: 'Police', amount: 17, color: '#2563eb' },
           { label: 'DOJ', amount: 0, color: '#eab308' },
         ],
-      }
+      },
+      chart: [
+        { name: '16:00', uv: 0 },
+        { name: '16:05', uv: 2 },
+        { name: '16:10', uv: 8 },
+        { name: '16:15', uv: 12 },
+        { name: '16:20', uv: 7 },
+        { name: '16:25', uv: 15 },
+        { name: '16:30', uv: 20 },
+        { name: '16:35', uv: 24 },
+        { name: '16:40', uv: 20 },
+        { name: '16:45', uv: 28 },
+        { name: '16:50', uv: 35 },
+        { name: '16:55', uv: 38 },
+        { name: '17:00', uv: 45 },
+      ]
     }
   }
 ])
-*/
 
+/*
 debugData<EntityData>([
   {
     action: 'entityProps',
@@ -48,6 +62,7 @@ debugData<EntityData>([
     }
   }
 ])
+*/
 
 debugData([
   {

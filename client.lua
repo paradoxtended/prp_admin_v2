@@ -37,7 +37,8 @@ end)
 
 ---@param players PlayerData[]
 ---@param jobs JobsData[]
-RegisterNetEvent('prp_admin_v2:openAdminMenu', function(players, jobs)
+---@param chart { name: string, uv: number }[]
+RegisterNetEvent('prp_admin_v2:openAdminMenu', function(players, jobs, chart)
     local isAdmin = lib.callback.await('prp_admin_v2:isAdmin', false)
     if not isAdmin then return end
 
@@ -54,7 +55,8 @@ RegisterNetEvent('prp_admin_v2:openAdminMenu', function(players, jobs)
                 vanish = vanished,
                 blips = playerBlips,
                 names = playerNames
-            }
+            },
+            chart = chart
         }
     })
 end)
@@ -133,4 +135,30 @@ RegisterNuiCallback('remove_vehicle', function(plate, cb)
             type = 'inform'
         })
     end
+end)
+
+---@param cb fun(player: { x: number, y: number, z: number, w: number }, camera: { x: number, y: number, z: number, w: number })
+RegisterNuiCallback('getCoords', function(_, cb)
+    local plyCoords, plyHeading = GetEntityCoords(cache.ped), GetEntityHeading(cache.ped)
+
+    local player = {
+        x = plyCoords.x,
+        y = plyCoords.y,
+        z = plyCoords.z,
+        w = plyHeading
+    }
+
+    local camCoords, camHeading = GetGameplayCamCoord(), GetGameplayCamRot(0)
+
+    local camera = {
+        x = camCoords.x,
+        y = camCoords.y,
+        z = camCoords.z,
+        w = camHeading.z
+    }
+
+    cb({
+        player = player,
+        camera = camera
+    })
 end)
