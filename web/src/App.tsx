@@ -13,6 +13,7 @@ import { isEnvBrowser } from "./utils/misc";
 import Developer from "./components/categories/Developer";
 import EntityProps from "./components/EntityProps";
 
+/*
 debugData<OpenData>([
   {
     action: 'openAdmin',
@@ -34,6 +35,26 @@ debugData<OpenData>([
     }
   }
 ])
+*/
+
+debugData<EntityData>([
+  {
+    action: 'entityProps',
+    data: {
+      coords: { x: 1547.544, y: 879.87, z: 15.452 },
+      heading: 48.547,
+      model: 'prop_bench_01a',
+      networkOwner: 48
+    }
+  }
+])
+
+debugData([
+  {
+    action: 'hideEntityProps',
+    data: {}
+  }
+], 3000)
 
 const App: React.FC = () => {
   const [visible, setVisible] = useState<boolean>(false);
@@ -88,17 +109,7 @@ const App: React.FC = () => {
   })
 
   useNuiEvent('hideEntityProps', () => {
-    const wrapper = document.querySelector('.entity-modal') as HTMLElement;
-
-    if (wrapper === null) return;
-
-    wrapper.style.animation = 'flyOut 250ms forwards';
-
-    setTimeout(() => {
-      if (entity !== null) {
-        setEntity(null)
-      };
-    }, 250)
+    setEntity(null)
   })
 
   useNuiEvent('screenshot', (image: string) => {
@@ -184,9 +195,7 @@ const App: React.FC = () => {
           </div>
         </div>
       </Fade>
-      {entity !== null &&
-        <EntityProps entity={entity} />
-      }
+      <EntityProps entity={entity} />
     </>
   )
 };

@@ -26,7 +26,7 @@ PushScaleformMovieFunction(scaleformHandle, 'SET_TEXTURE')
 PushScaleformMovieMethodParameterString(dui.dictName)
 PushScaleformMovieMethodParameterString(dui.txtName)
 
-PushScaleformMovieFunctionParameterInt(0)
+PushScaleformMovieFunctionParameterInt(-50)
 PushScaleformMovieFunctionParameterInt(0)
 PushScaleformMovieFunctionParameterInt(1920)
 PushScaleformMovieFunctionParameterInt(1080)
@@ -199,7 +199,7 @@ local function getRotationBetweenCoords(from, to)
     local distance = math.sqrt(dir.x * dir.x + dir.y * dir.y)
     local rotX = -math.deg(math.atan(dir.z / distance))
     
-    return vector3(rotX - 30.0, 0.0, rotZ + 75.0) -- 75 for little perspective detail
+    return vector3(rotX - 30.0, 0.0, rotZ + 80.0) -- 75 for little perspective detail
 end
 
 local width = 0.25
@@ -208,12 +208,12 @@ local height = width * (9 / 16)
 local function lookForObject()
     local lastCoords = lastCoords or vector3(0, 0, 0)
 
-    DrawMarker(28, lastCoords.x, lastCoords.y, lastCoords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1,
-        0.1,
+    DrawMarker(28, lastCoords.x, lastCoords.y, lastCoords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.05, 0.05,
+        0.05,
         ---@diagnostic disable-next-line: param-type-mismatch
         0, 255, 0, 150, false, false, 0, true, false, false, false)
 
-    local scaleformPos = vector3(lastCoords.x, lastCoords.y, lastCoords.z + 1.5)
+    local scaleformPos = vector3(lastCoords.x, lastCoords.y, lastCoords.z + 2.0)
     local camPos = GetEntityCoords(cache.ped)
     local rotation = getRotationBetweenCoords(scaleformPos, camPos)
 
